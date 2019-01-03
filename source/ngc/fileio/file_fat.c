@@ -99,34 +99,41 @@ int FAT_UpdateDir(int go_up)
  *
  * List files into one FAT directory
  ***************************************************************************/ 
-int FAT_ParseDirectory()
+int FAT_ParseDirectory(void)
 {
   int nbfiles = 0;
   char filename[MAXPATHLEN];
+  char filename1[MAXPATHLEN];
+  
+  /* open directory */
+  DIR* dp = opendir(fatdir);
+    if (!dp)
+    {
+      sprintf(filename, "Error opening %s", fatdir);
+      WaitPrompt (filename);
+      return 0;
+    }
+  
+  struct dirent *entry = readdir(dp);
   struct stat filestat;
 
-  /* open directory */
-  DIR_ITER *dir = diropen (fatdir);
-  if (dir == NULL) 
-  {
-    sprintf(filename, "Error opening %s", fatdir);
-    WaitPrompt (filename);
-    return 0;
-  }
-
-  while ((dirnext(dir, filename, &filestat) == 0) && (nbfiles < MAXFILES))
-  {
-    if (strcmp(filename,".") != 0)
+  /* list entries */
+  while ((entry != NULL)&& (nbfiles < MAXFILES) ){
+    if (entry->d_name[0] != '.')
     {
-      memset(&filelist[nbfiles], 0, sizeof (FILEENTRIES));
-      sprintf(filelist[nbfiles].filename,"%s",filename);
-      filelist[nbfiles].length = filestat.st_size;
-      filelist[nbfiles].flags = (filestat.st_mode & S_IFDIR) ? 1 : 0;
-      nbfiles++;
-    }
-  }
-
-  dirclose(dir);
+       memset(&filelist[nbfiles], 0, sizeof (FILEENTRIES));    
+       sprintf(filelist[nbfiles].filename,"%s", entry->d_name);         
+       sprintf(filename1, "%s%s", fatdir, filelist[nbfiles].filename); 
+       stat(filename1, &filestat);       
+       filelist[nbfiles].length  = filestat.st_size;
+     
+     if (entry->d_type == DT_DIR) { filelist[nbfiles].flags = 1; }
+       nbfiles++;
+     }
+      /* next entry */
+      entry = readdir(dp);
+ }
+  closedir(dp);
 
   /* Sort the file list */
   qsort(filelist, nbfiles, sizeof(FILEENTRIES), FileSortCallback);
@@ -326,9 +333,9 @@ int FAT_Open(int type, u8 *buffer)
       sprintf (fatdir, "%s%s/roms/", root, DEFAULT_PATH);
 
       /* if directory doesn't exist, use root as default */
-      DIR_ITER *dir = diropen(fatdir);
-      if (dir == NULL) sprintf (fatdir, "%s/", root);
-      else dirclose(dir);
+      DIR *dir = opendir(fatdir);
+      if (!dir) sprintf (fatdir, "%s/", root);
+      else closedir(dir);
 
       /* parse root directory */
       ShowAction("Reading Directory ...");

@@ -32,18 +32,18 @@ void history_save()
 
   if (!fat_enabled) return;
 
-  /* first check if directory exist */
+  // first check if directory exist
   sprintf (pathname, DEFAULT_PATH);
-  DIR_ITER *dir = diropen(pathname);
-  if (dir == NULL) mkdir(pathname,S_IRWXU);
-  else dirclose(dir);
+  DIR* dir = opendir(pathname);
+  if (!dir) mkdir(pathname,S_IRWXU);
+  else closedir(dir);
 
-  /* open file for writing */
+  // open file for writing
   sprintf (pathname, "%s/history.ini", pathname);
   FILE *fp = fopen(pathname, "wb");
   if (fp == NULL) return;
 
-  /* save options */
+  // save options
   fwrite(&history, sizeof(history), 1, fp);
 
   fclose(fp);
@@ -59,39 +59,39 @@ void history_save()
   ****************************************************************************/ 
 void history_add_file(char *filepath, char *filename)
 {
-  /* Create the new entry for this path. */
+  // Create the new entry for this path.
   t_history_entry newentry;
   strncpy(newentry.filepath, filepath, MAXJOLIET - 1);
   strncpy(newentry.filename, filename, MAXJOLIET - 1);
   newentry.filepath[MAXJOLIET - 1] = '\0';
   newentry.filename[MAXJOLIET - 1] = '\0';
   
-  t_history_entry oldentry;  /* Old entry is the one being shuffled down a spot. */  
-  t_history_entry currentry;  /* Curr entry is the one that just replaced old path. */
+  t_history_entry oldentry;  // Old entry is the one being shuffled down a spot.  
+  t_history_entry currentry;  // Curr entry is the one that just replaced old path.
   
-  /* Initially set curr entry to the new value. */
+  // Initially set curr entry to the new value.
   memcpy(&currentry, &newentry, sizeof(t_history_entry));
 
   int i;
   for(i=0; i < NUM_HISTORY_ENTRIES; i++)
   {
-    /* Save off the next entry. */
+    // Save off the next entry.
     memcpy(&oldentry, &history.entries[i], sizeof(t_history_entry));
 
-    /* Overwrite with the previous entry. */
+    // Overwrite with the previous entry.
     memcpy(&history.entries[i], &currentry, sizeof(t_history_entry));
 
-    /* Switch the old entry to the curr entry now. */
+    // Switch the old entry to the curr entry now.
     memcpy(&currentry, &oldentry, sizeof(t_history_entry));
 
-    /* If the entry in the list at this spot matches
-       the new entry then do nothing and let this
-       entry get deleted. */
+    // If the entry in the list at this spot matches
+    // the new entry then do nothing and let this
+    // entry get deleted
     if(strcmp(newentry.filepath, currentry.filepath) == 0 && strcmp(newentry.filename, currentry.filename) == 0)
       break;
   }
 
-  /* now save to disk */
+  // now save to disk
   history_save();
 }
 
@@ -99,12 +99,12 @@ void history_load()
 {
   char pathname[MAXPATHLEN];
 
-  /* open file for reading */
+  // open file for reading
   sprintf (pathname, "%s/history.ini", DEFAULT_PATH);
   FILE *fp = fopen(pathname, "rb");
   if (fp == NULL) return;
 
-  /* read file */
+  // read file
   fread(&history, sizeof(history), 1, fp);
 
   fclose(fp);

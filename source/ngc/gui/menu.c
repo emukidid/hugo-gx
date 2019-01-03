@@ -13,7 +13,6 @@
 #include <network.h>
 #include <zlib.h>
 
-
 #ifdef HW_RVL
 #include "preferences.h"
 #include <wiiuse/wpad.h>
@@ -34,14 +33,13 @@ int networkInit;
 unsigned int savetimer;
 unsigned int *backdrop;
 unsigned int backcolour;
-char version[] = { "Version 2.12" };
-
+char version[] = { "Version 2.12.1" };
 
 int smbmenu();
+extern u8 region;
+extern u8 render;
+extern u8 aspect;
 
-
-
-	
 
 /****************************************************************************
  * Unpack Background
@@ -52,24 +50,25 @@ void unpack()
   int *temp;
   int h,w,v;
   
-	
+
   inbytes = hugologo_COMPRESSED;
   outbytes = hugologo_RAW;
 
-  /*** Allocate the background bitmap ***/
+  // Allocate the background bitmap
   backdrop = malloc( 320 * 480 * 4 );
 
-  /*** Allocate temporary space ***/
+  // Allocate temporary space 
   temp = malloc(outbytes + 16);
   res = uncompress( (Bytef *)temp, &outbytes, (Bytef *)hugologo, inbytes);
-
+  if (res == res) {}; // Gamecube compiler error suppression
+  
   memcpy(&w, temp, 4);
   backcolour = w;
 
-  /*** Fill backdrop ***/
+  // Fill backdrop 
   for (h = 0; h < (320 * 480); h++) backdrop[h] = w;
 
-  /*** Put picture in position ***/
+  // Put picture in position 
   v = 0;
   for (h = 0; h < hugologo_HEIGHT; h++)
   {
@@ -145,7 +144,7 @@ void pourlogo()
   int v;
   int linecount = 0;
 
-  /*** Pour in the logo ***/
+  // Pour in the logo 
   memcpy(&w, backdrop, 4);
 
   for (i = 0; i < 100; i++)
@@ -153,8 +152,8 @@ void pourlogo()
     whichfb ^= 1;
     for (h = 0; h < ( 320 * 480 ); h++) xfb[whichfb][h] = w;
 
-    /*** Now pour 4 lines at a time ***/
-    /*** Copy base on screen ***/
+    // Now pour 4 lines at a time 
+    // Copy base on screen 
     if (linecount)
     {
       memcpy(&xfb[whichfb][((334 - linecount) * 320)], 
@@ -169,8 +168,11 @@ void pourlogo()
     WriteCentre(340, version);
     SetScreen();
   }
-
-  sleep(1);
+#ifdef HW_RVL
+  load_settings();
+#endif
+  dvd_motor_off();      // Stop DVD Motor upon startup, just in case
+//  sleep(1);           // Stoping DVD Motor, dont need sleep anymore
 }
 
 /****************************************************************************
@@ -178,20 +180,19 @@ void pourlogo()
  ****************************************************************************/
 void credits()
 {
-#ifdef HW_RVL
-  load_settings();
-#endif
-  int p = 220 + ( fheight << 1);
+  int p = 200 + ( fheight << 1);
   copybackdrop();
-  WriteCentre(p, "Hu-Go! - Zeograd http://www.zeograd.com");
+  WriteCentre(p, "Hu-Go! by Zeograd: www.zeograd.com");
   p += fheight;
-  WriteCentre(p, "PCE PSG Info - Paul Clifford / John Kortink / Ki");
+  WriteCentre(p, "PCE PSG Info: Paul Clifford, John Kortink, Ki");
   p += fheight;
-  WriteCentre(p, "Gamecube & Wii Port - softdev / eke-eke");
+  WriteCentre(p, "Gamecube & Wii Port: softdev & eke-eke");
   p += fheight;
-  WriteCentre(p, "libOGC - shagkur / wntrmute");
+  WriteCentre(p, "libOGC: shagkur & wntrmute");
   p += fheight;
-  WriteCentre(p, "Support - http://www.tehskeen.com");
+  WriteCentre(p, "Updated by: Megalomaniac");
+  p += fheight;
+  WriteCentre(p, "Support: www.gc-forever.com");
   p += ( fheight << 1 );
   WriteCentre(p, "Press Button A");
   SetScreen();
@@ -202,6 +203,8 @@ void credits()
  * Menu
  ****************************************************************************/
 static int menu = 0;
+extern void ogc_video__init_safe();
+extern void ogc_video__init();
 
 void DrawMenu( char items[][20], int maxitems, int selected )
 {
@@ -218,6 +221,8 @@ void DrawMenu( char items[][20], int maxitems, int selected )
   }
   SetScreen();
 }
+
+extern u8 safemode;
 
 int DoMenu (char items[][20], int maxitems)
 {
@@ -236,7 +241,7 @@ int DoMenu (char items[][20], int maxitems)
 
     p = ogc_input__getMenuButtons();
 
-    /*** Look for up ***/
+    // Look for up 
     if (p & PAD_BUTTON_UP)
     {
       redraw = 1;
@@ -244,7 +249,7 @@ int DoMenu (char items[][20], int maxitems)
       if (menu < 0) menu = maxitems - 1;
     }
 
-    /*** Look for down ***/
+    // Look for down 
     if (p & PAD_BUTTON_DOWN)
     {
       redraw = 1;
@@ -269,8 +274,8 @@ int DoMenu (char items[][20], int maxitems)
       quit = 1;
       ret = -1;
     }
-  }
 
+  }
   return ret;
 }
 
@@ -319,7 +324,6 @@ int wrammenu ()
         if (quit) return 1;
         break;
     }
-
   }
 
   menu = prevmenu;
@@ -328,9 +332,6 @@ int wrammenu ()
 /****************************************************************************
  * OPTION Menu
  ****************************************************************************/
-extern u8 aspect;
-extern u8 render;
-
 int optionmenu ()
 {
   int prevmenu = menu;
@@ -338,60 +339,72 @@ int optionmenu ()
   int ret;
   int count;
 #ifdef HW_RVL  
-  char items[4][20];
-  count = 4;
+  char items[7][20];
+  count = 7;
 #else
-  char items[3][20];
-  count = 3;
+  char items[6][20];
+  count = 6;
 #endif
-  //}
+
   
   menu = 0;
 
   while (quit == 0)
   {
-    sprintf(items[0], "Aspect: %s", aspect ? "ORIGINAL" : "STRETCH");
-    if (render == 1) sprintf (items[1], "Render: INTERLACED");
-    else if (render == 2) sprintf (items[1], "Render: PROGRESSIVE");
-    else sprintf (items[1], "Render: ORIGINAL");
+    if (region == 0) sprintf(items[0], "Region: NTSC");           // 480 or 576
+      else if (region == 1) sprintf(items[0], "Region: PAL60");
+      else sprintf(items[0], "Region: PAL50");
+      
+    if (render == 0) sprintf(items[1], "Video: INTERLACED");      // self-explanatory
+      else if(VIDEO_HaveComponentCable()) sprintf(items[1], "Video: PROGRESSIVE");
+
+    if (aspect == 0) sprintf(items[2], "Aspect: NORMAL");         // libogc defautl aspect
+      else if (aspect == 1) sprintf(items[2], "Aspect: STRETCH"); // custom stretch
+      else sprintf(items[2], "Aspect: PCE 240");                  // native TGX 240 aspect
+
+    sprintf (items[3],"WRAM Manager");
 #ifdef HW_RVL  
-    sprintf (items[2],"SMB Settings");
-	sprintf (items[3],"Return to previous");
+    sprintf (items[4],"SMB Settings");
+    sprintf (items[5],"View Credits");
+    sprintf (items[6],"Return to previous");
 #else
-	sprintf (items[2],"Return to previous");
+    sprintf (items[4],"View Credits");
+    sprintf (items[5],"Return to previous");
 #endif
 
     ret = DoMenu (&items[0], count);
     switch (ret)
     {
-
-#ifndef HW_RVL  
-	  case 2:
-#else
-	  case 2:
-		smbmenu();
-#endif
-      case -1:
-	  case 3:
-        quit = 1;
-        break;
-
       case 0:
-        aspect ^= 1;
+        if (region <= 2 ) region += 1;
+	if ((region == 2 ) && ( aspect == 2 )) { aspect = 0; sprintf(items[2], "Aspect: NORMAL"); }
+        if (region == 3 ) region -= 3;
         break;
-
       case 1:
-        render = (render + 1) % 3;
-        if (render == 2)
-        {
-          if (!VIDEO_HaveComponentCable())
-          {
-            /* do nothing if component cable is not detected */
-            render = 0;
-          }
-        }
+        if(VIDEO_HaveComponentCable()) render ^= 1;
+        break;
+      case 2:
+        if (region != 2 ) {
+           if (aspect <= 2 ) aspect += 1;
+           if (aspect == 3 ) aspect -= 3; }
+        if ((region == 2 ) && ( aspect == 0 || aspect == 1 )) aspect ^= 1;
+//           if (aspect <= 2 ) aspect += 1;
+//           if (aspect == 3 ) aspect -= 3; }
+        break;
+      case 3:
+        quit = wrammenu();
         break;
 
+#ifdef HW_RVL  
+      case 4: smbmenu(); break;
+      case 5: credits(); break;
+      case -1:
+      case 6:  quit = 1; break;
+#else
+      case 4: credits(); break;
+      case -1:
+      case 5:  quit = 1; break;
+#endif
     }
   }
 
@@ -406,38 +419,35 @@ int optionmenu ()
 
 void initNetwork()
 {
-	ShowAction("initializing network...");
-	while (net_init() == -EAGAIN);
-	char myIP[16];
+  ShowAction("initializing network...");
+  while (net_init() == -EAGAIN);
+    char myIP[16];
 
-	if (if_config(myIP, NULL, NULL, true) < 0) 
-	{
-		WaitPrompt("failed to init network interface\n");
-		exit(EXIT_FAILURE);
-	}
-	else
-	{
-		networkInit = 1;
-		if ((strlen(HugoSettings.share)) > 0 && (strlen(HugoSettings.ip) > 0))
-		{
-			if (!smbInit(HugoSettings.user, HugoSettings.pwd, HugoSettings.share, HugoSettings.ip)) 
-			{
-				printf("failed to connect to SMB share\n");
-				exit(EXIT_FAILURE);
-			}
-		}
-		else
-			WaitPrompt("Wrong Parameters - Check your Settings.xml");
-	}
-	
+    if (if_config(myIP, NULL, NULL, true) < 0) 
+      {
+        WaitPrompt("failed to init network interface\n");
+        exit(EXIT_FAILURE);
+      }
+    else
+      {
+        networkInit = 1;
+        if ((strlen(HugoSettings.share)) > 0 && (strlen(HugoSettings.ip) > 0))
+        {
+          if (!smbInit(HugoSettings.user, HugoSettings.pwd, HugoSettings.share, HugoSettings.ip)) 
+          {
+              printf("failed to connect to SMB share\n");
+              exit(EXIT_FAILURE);
+          }
+        }
+        else WaitPrompt("Wrong Parameters - Check your Settings.xml");
+      }
 }
 
 void closeNetwork()
 {
-	if(networkInit)
-		smbClose("smb");
-	networkInit = false;
-	
+  if(networkInit)
+    smbClose("smb");
+    networkInit = false;
 } 
 
  
@@ -455,26 +465,24 @@ int smbmenu ()
   {
     sprintf (items[0], "IP: %s", HugoSettings.ip);
     sprintf (items[1], "Share: %s", HugoSettings.share);
-	sprintf (items[2], "Username: %s", HugoSettings.user);
+    sprintf (items[2], "Username: %s", HugoSettings.user);
     sprintf (items[3], "Password: %s", HugoSettings.pwd);	
-	sprintf (items[4],"Return to previous");
-
+    sprintf (items[4], "Return to previous");
 
     ret = DoMenu (&items[0], count);
     switch (ret)
     {
       case -1:
-	  case 4:
-	    quit = 1;
+      case 4:
+        quit = 1;
         break;
 
+      // open OnScreenKeyboard for user Settings in future versions...
       case 0:
-	  // open OnScreenKeyboard for user Settings in future versions...
       case 1:
-	  case 2:
-	  case 3:	  
+      case 2:
+      case 3:	  
         break;
-
     }
   }
   menu = prevmenu;
@@ -488,26 +496,30 @@ int smbmenu ()
 extern int hugoromsize;
 extern unsigned char *hugorom;
 extern char rom_filename[MAXJOLIET];
+
 static u8 load_menu = 0;
 static u8 dvd_on = 0;
-
 
 int loadmenu ()
 {
   int prevmenu = menu;
   int ret,count,size;
   int quit = 0;
+
 #ifdef HW_RVL
+  count = 6 + dvd_on;
   char item[6][20] = {
     {"Load Recent"},
     {"Load from SD"},
     {"Load from USB"},
     {"Load from DVD"},
-	{"Load from SMB"},
+    {"Load from SMB"},
     {"Stop DVD Motor"}
   };
+
 #else
-  char item[5][20] = {
+  count = 4 + dvd_on;
+  char item[4][20] = {
     {"Load Recent"},
     {"Load from SD"},
     {"Load from DVD"},
@@ -519,44 +531,17 @@ int loadmenu ()
   
   while (quit == 0)
   {
-#ifdef HW_RVL
-    count = 5 + dvd_on;
-#else
-    count = 3 + dvd_on;
-#endif
     ret = DoMenu (&item[0], count);
     switch (ret)
     {
-      /*** Button B ***/
+      // Button B 
       case -1: 
         quit = 1;
         break;
 
-      /*** Load from DVD ***/
 #ifdef HW_RVL
-      
-
-      /*** Load from SMB Share ***/
-	  case 4:
-		if (!networkInit)
-			initNetwork();
-			
-	    load_menu = menu;
-        size = FAT_Open(ret,hugorom);
-        if (size)
-        {
-		   hugoromsize = size;
-		   cart_reload = 1;
-		   sprintf(rom_filename,"%s",filelist[selection].filename);
-		   rom_filename[strlen(rom_filename) - 4] = 0;
-		   return 1;
-        }
-        break;
-	  
-	  case 3:
-#else
-      case 2:
-#endif
+      // Load from DVD
+      case 3:
         load_menu = menu;
         size = DVD_Open(hugorom);
         if (size)
@@ -569,19 +554,56 @@ int loadmenu ()
           return 1;
         }
         break;
-
-      /*** Stop DVD Disc ***/
-#ifdef HW_RVL
-      case 5:  
-#else
-      case 3:
-#endif
+      // Load from SMB Share
+      case 4:
+        if (!networkInit) initNetwork();
+          load_menu = menu;
+          size = FAT_Open(ret,hugorom);
+          if (size)
+          {
+            hugoromsize = size;
+            cart_reload = 1;
+            sprintf(rom_filename,"%s",filelist[selection].filename);
+            rom_filename[strlen(rom_filename) - 4] = 0;
+            return 1;
+          }
+        break;
+      // Stop DVD
+      case 5:
+        ShowAction("Stopping DVD drive...");
         dvd_motor_off();
         dvd_on = 0;
         menu = load_menu;
         break;
 
-      /*** Load from FAT device ***/
+#else
+      // Load from DVD
+      case 2:
+        DVD_Init();
+        dvd_drive_detect();
+        load_menu = menu;
+        size = DVD_Open(hugorom);
+        if (size)
+        {
+          dvd_on = 1;
+          hugoromsize = size;
+          cart_reload = 1;
+          sprintf(rom_filename,"%s",filelist[selection].filename);
+          rom_filename[strlen(rom_filename) - 4] = 0;
+          return 1;
+        }
+        break;
+      // Stop DVD
+      case 3:
+        ShowAction("Stopping DVD drive...");
+        dvd_motor_off();
+        dvd_on = 0;
+        menu = load_menu;
+        break;
+#endif
+
+      // Load from FAT device 
+      // case 0 & case 1 = default
       default:
         load_menu = menu;
         size = FAT_Open(ret,hugorom);
@@ -607,33 +629,41 @@ int loadmenu ()
  ****************************************************************************/
 extern int frameticker;
 int gamepaused = 0;
-
+  
 void MainMenu()
 {
   s8 ret;
   u8 quit = 0;
   menu = 0;
-  u8 count = 7;
-  char items[7][20] =
+#ifdef HW_RVL
+  u8 count = 6;
+  char items[6][20] =
+#else
+  u8 count = 5;
+  char items[5][20] =
+#endif
   {
     {"Play Game"},
     {"Hard Reset"},
     {"Load New Game"},
     {"Emulator Options"},
-    {"WRAM Manager"},
+//    {"WRAM Manager"},  moved to Emulator Options
+#ifdef HW_RVL
     {"Return to Loader"},
+#endif
     {"System Reboot"}
   };
 
   savetimer = timer_60;
   gamepaused = 1; 
 
-  /* Switch to menu default rendering mode (60hz or 50hz, but always 480 lines) */
+  // Switch to menu default rendering mode (auto detect)
   VIDEO_Configure (vmode);
   VIDEO_ClearFrameBuffer(vmode, xfb[whichfb], COLOR_BLACK);
   VIDEO_Flush();
   VIDEO_WaitVSync();
   VIDEO_WaitVSync();
+
 
   while (quit == 0)
   {
@@ -664,25 +694,22 @@ void MainMenu()
         optionmenu();
         break;
 
-         case 4 :
-        quit = wrammenu();
-        break;
+//      case 4 :
+//        quit = wrammenu();
+//        break;
 
-      case 5: 
+      case 4: 
         VIDEO_ClearFrameBuffer(vmode, xfb[whichfb], COLOR_BLACK);
         VIDEO_Flush();
         VIDEO_WaitVSync();
 #ifdef HW_RVL
         DI_Close();
-#endif
-        exit(0);
         break;
 
-      case 6:
+      case 5:
         VIDEO_ClearFrameBuffer(vmode, xfb[whichfb], COLOR_BLACK);
         VIDEO_Flush();
         VIDEO_WaitVSync();
-#ifdef HW_RVL
         DI_Close();
         SYS_ResetSystem(SYS_RETURNTOMENU, 0, 0);
 #else
@@ -692,13 +719,13 @@ void MainMenu()
     }
   }
 
-  /*** Remove any still held buttons ***/
+  // Remove any still held buttons 
   while(PAD_ButtonsHeld(0)) PAD_ScanPads();
 #ifdef HW_RVL
   while(WPAD_ButtonsHeld(0)) WPAD_ScanPads();
 #endif
 
-  /*** Reinitialize current TV mode ***/
+  // Reinitialize current TV mode 
   ogc_video__reset();
   
   gamepaused = 0;
@@ -706,7 +733,7 @@ void MainMenu()
   frameticker = 0;
 
 #ifndef HW_RVL
-  /*** Stop the DVD from causing clicks while playing ***/
+  // Stop the DVD from causing clicks while playing 
   uselessinquiry ();
 #endif
 }

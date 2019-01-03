@@ -406,9 +406,9 @@ fill_HCD_info (char *name)
 
 						      "0XFFFFFFFF,0XFF"));
 
-
-
-		  sscanf (tmp_str, "%X,%X",
+	          // Gamecube compiler error suppression
+//		  sscanf (tmp_str, "'%X,'%X",
+		  sscanf (tmp_str, "'%X,'%c",
 
 			  &CD_track[current_track].patch[i].offset,
 
@@ -783,7 +783,8 @@ HCD_play_track (UChar track, char repeat)
      osd_cd_play_audio_track((UChar)(CD_track[track].filename[0]));
      }
 
-#warning "reenable mp3 with sdl"
+// Gamecube compiler error suppression
+//#warning "reenable mp3 with sdl"
 #if (defined(LINUX) || defined(MSDOS)) && defined(ALLEGRO)
 
   else
@@ -930,7 +931,9 @@ HCD_play_sectors (int begin_sect, int sect_len, char repeat)
 
      }
 
-#warning "reenable mp3 with sdl"
+
+// Gamecube compiler error suppression
+//#warning "reenable mp3 with sdl"
 #if (defined(LINUX) || defined(MSDOS)) && defined(ALLEGRO)
 
   else
@@ -1136,6 +1139,9 @@ HCD_iso_read_sector(unsigned char *p, UInt32 dum, UInt32 result)
   static int current_position = 0;
   static int current_file = 0;
   static int current_type = 0;
+
+  if (current_position == current_position) {};        // Gamecube compiler error suppression
+
 
 #ifndef FINAL_RELEASE
   fprintf (stderr, "Loading sector nø%d.\n", pce_cd_sectoraddy);

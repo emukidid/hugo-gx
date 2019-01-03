@@ -10,7 +10,7 @@
 
 #include <fat.h>
 
-char initial_path[PATH_MAX] = "";
+//char initial_path[PATH_MAX] = "";
 // prefered path for for searching
 
 UChar* osd_gfx_buffer = NULL;
@@ -34,7 +34,9 @@ UInt32 interrupt_60hz(UInt32, void*);
 // declaration of the actual callback to call 60 times a second
 
 extern void ogc_video__init(void);
-extern void dvd_drive_detect();
+extern void ogc_video__init_safe(void);
+
+//extern void dvd_drive_detect();  moved to /gui/menu.c
 extern void MainMenu();
 
 int hugoromsize;
@@ -43,33 +45,34 @@ bool fat_enabled = 0;
 int Shutdown = 0;
 
 #ifdef HW_RVL
-/* Power Button callback */
+// Power Button callback
 void Power_Off(void)
 {
   Shutdown = 1;
-   MainMenu();
+  MainMenu();
 }
 #endif
 
+u8 safemode = 0;
+
 int osd_init_machine(void)
 {
-  /* Initialize Video */
+  // Initialize Video
   ogc_video__init();
 
-#ifndef HW_RVL
-  /* initialize DVD drive */
-  DVD_Init ();
-  dvd_drive_detect();
-#endif
+//#ifndef HW_RVL        //  initialize DVD drive commands moved to /gui/menu.c
+//  DVD_Init ();
+//  dvd_drive_detect();
+//#endif
 
-  /* Initialize FAT Interface */
+  // Initialize FAT Interface
   if (fatInitDefault() == true)
   {
     fat_enabled = 1;
 
   }
 
-  /* Restore Recent Files list */
+  // Restore Recent Files list
   set_history_defaults();
   history_load();
 
@@ -85,7 +88,7 @@ int osd_init_machine(void)
 
   osd_gfx_buffer = XBuf + 32 + 64 * XBUF_WIDTH; // We skip the left border of 32 pixels and the 64 first top lines
 
-  /* Allocate cart_rom here */
+  // Allocate cart_rom here
   hugorom = memalign(32, 2621440);
   memset(hugorom, 0, 2621440);
   hugoromsize = 0;
@@ -106,6 +109,7 @@ int osd_init_machine(void)
 void
 osd_shut_machine (void)
 {
+  TrashSound();
 }
 
 /*****************************************************************************

@@ -90,6 +90,9 @@ int KbPerSecTab[2][4][16] = {
 unsigned int FrqTab[] = { 44100, 48000, 32000, 22050, 24000, 16000, 11025 };
 char *EmphasisTbl[] = { "none", "50/15ms", "unknown", "CCITTj.17" };
 
+
+// Gamecube compiler error suppression
+/*
 char
 fBufferEmpty (char *pBuffer)
 {
@@ -104,7 +107,20 @@ fBufferEmpty (char *pBuffer)
   else
     return 0;
 }
+*/
 
+char fBufferEmpty (unsigned char *pBuffer)
+{
+  if (pBuffer == NULL)
+    return 1;
+
+  for (; isspace (*pBuffer) && *pBuffer != '\0'; pBuffer++);
+
+  if (*pBuffer == '\0')
+    return 1;
+  else
+    return 0;
+}
 
 float
 MP3_length (char *argv)
@@ -229,6 +245,17 @@ MP3_length (char *argv)
 	      fOriginal = 1;
 
 	    Emphasis = Head & 0x3;
+
+	      // Gamecube compiler error suppression
+	      if ( MinorVer == MinorVer ) {};
+	      if ( Frq == Frq ) {};
+	      if ( Mode == Mode ) {};
+	      if ( fCRC == fCRC ) {};
+	      if ( fPadding == fPadding ) {};
+	      if ( fPrivate == fPrivate ) {};
+	      if ( fCopyright == fCopyright ) {};    
+	      if ( fOriginal == fOriginal ) {};
+	      if ( Emphasis == Emphasis ) {};
 
 	    break;
 	  }

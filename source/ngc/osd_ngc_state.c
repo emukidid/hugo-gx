@@ -17,20 +17,16 @@
 
 #define SAVESIZE 0x4000
 
-/* Support for MemCards  */
-/**
- * libOGC System Work Area
- */
+// Support for MemCards
+// libOGC System Work Area
 static u8 SysArea[CARD_WORKAREA] ATTRIBUTE_ALIGN (32);
 static card_dir CardDir;
 static card_file CardFile;
 static card_stat CardStatus;
 
-/**
- * DMA Transfer Area.
- * Must be 32-byte aligned.
- * 64k SRAM + 2k Icon
- */
+// DMA Transfer Area.
+// Must be 32-byte aligned.
+// 64k SRAM + 2k Icon
 static u8 savebuffer[SAVESIZE] ATTRIBUTE_ALIGN (32);
 char rom_filename[MAXJOLIET];
 
@@ -55,17 +51,17 @@ static int FAT_ManageFile(char *filename, int direction)
   
   if (!fat_enabled) return 0;
 
-  /* first check if directory exist */
+  // first check if directory exist
   sprintf (pathname, "%s/saves", DEFAULT_PATH);
 
-  DIR_ITER *dir = diropen(pathname);
-  if (dir == NULL) mkdir(pathname,S_IRWXU);
-  else dirclose(dir);
+  DIR* dir = opendir(pathname);
+  if (!dir) mkdir(pathname,S_IRWXU);
+  else closedir(dir);
 
-  /* build complete SDCARD filename */
+  // build complete SDCARD filename
   sprintf (pathname, "%s/%s", pathname, filename);
 
-  /* open file */
+  // open file
   FILE *fp = fopen(pathname, direction ? "rb" : "wb");
   if (fp == NULL)
   {
@@ -76,12 +72,12 @@ static int FAT_ManageFile(char *filename, int direction)
   
   switch (direction)
   {
-    case 0: /* SAVING */
+    case 0: // SAVING
 
       memcpy (&savebuffer[0], WRAM, 0x2000);
       filesize = 0x2000;
 
-      /* write buffer */
+      // write buffer
       done = fwrite(savebuffer, 1, filesize, fp);
       if (done < filesize)
       {
@@ -95,14 +91,14 @@ static int FAT_ManageFile(char *filename, int direction)
       WaitPrompt (filename);
       return 1;
     
-    case 1: /* LOADING */
+    case 1: // LOADING
     
-      /* read size */
+      // read size
       fseek(fp , 0 , SEEK_END);
       filesize = ftell (fp);
       fseek(fp, 0, SEEK_SET);
 
-      /* read into buffer (32k blocks) */
+      // read into buffer (32k blocks)
       done = fread(savebuffer, 1, filesize, fp);
       if (done < filesize)
       {
@@ -138,14 +134,14 @@ int MountTheCard (u8 slot)
 {
   int tries = 0;
   int CardError;
-  *(unsigned long *) (0xcc006800) |= 1 << 13; /*** Disable Encryption ***/
+  *(unsigned long *) (0xcc006800) |= 1 << 13; // Disable Encryption
 #ifndef HW_RVL
   uselessinquiry ();
 #endif
   while (tries < 10)
   {
     VIDEO_WaitVSync ();
-    CardError = CARD_Mount (slot, SysArea, NULL); /*** Don't need or want a callback ***/
+    CardError = CARD_Mount (slot, SysArea, NULL); // Don't need or want a callback
     if (CardError == 0) return 1;
     else EXI_ProbeReset ();
     tries++;
@@ -189,7 +185,7 @@ int ManageWRAM (u8 direction, u8 device)
  
   char filename[128];
  
-  /* clean buffer */
+  // clean buffer
   memset(savebuffer, 0, SAVESIZE);
 
   if (direction) ShowAction ("Saving WRAM ...");
@@ -197,12 +193,12 @@ int ManageWRAM (u8 direction, u8 device)
 
   if (device == 0)
   {
-    /* FAT support */
+    // FAT support
     sprintf (filename, "%s.hgo", rom_filename);
     return FAT_ManageFile(filename,direction);
   }
 
-  /* Memory CARD support */
+  // Memory CARD support
   char action[80];
   int CardError;
   unsigned int SectorSize;
@@ -212,17 +208,17 @@ int ManageWRAM (u8 direction, u8 device)
   int sbo;
   int state_size = 0;
 
-  /* First, build a filename */
+  // First, build a filename
   sprintf(filename, "%08lX.hgo", ROMCRC32);
   sprintf(comment[1], "CRC : %08lX", ROMCRC32);
 
-  /* set MCARD slot nr. */
+  // set MCARD slot nr.
   u8 CARDSLOT = device - 1;
 
-  /* Saving */
+  // Saving
   if (direction == 0)
   {
-    /* Build the output buffer */
+    // Build the output buffer
     memcpy (&savebuffer, &icon, 2048);
     memcpy (&savebuffer[2048], &comment[0], 64);
     state_size = 0x2000;
@@ -230,26 +226,26 @@ int ManageWRAM (u8 direction, u8 device)
 
   outbytes = 2048 + 64 + state_size;
 
-  /*** Initialise the CARD system ***/
+  // Initialise the CARD system
   memset(&SysArea, 0, CARD_WORKAREA);
   CARD_Init("HUGO","00");
 
-  /*** Attempt to mount the card ***/
+  // Attempt to mount the card
   CardError = MountTheCard(CARDSLOT);
 
   if (CardError)
   {
-    /*** Retrieve the sector size ***/
+    // Retrieve the sector size
   CardError = CARD_GetSectorSize(CARDSLOT, &SectorSize);
 
     switch (direction)
     {
-      case 0: /*** Saving ***/
-        /*** Determine number of blocks on this card ***/
+      case 0: // Saving
+        // Determine number of blocks on this card
         blocks = (outbytes / SectorSize) * SectorSize;
         if (outbytes % SectorSize) blocks += SectorSize;
 
-        /*** Check if a previous save exists ***/
+        // Check if a previous save exists
         if (CardFileExists (filename,CARDSLOT))
         {
           CardError = CARD_Open (CARDSLOT, filename, &CardFile);
@@ -266,7 +262,7 @@ int ManageWRAM (u8 direction, u8 device)
 
           if (size < blocks)
           {
-            /* new size is bigger: check if there is enough space left */
+            // new size is bigger: check if there is enough space left
             CardError = CARD_Create (CARDSLOT, "TEMP", blocks-size, &CardFile);
             if (CardError)
             {
@@ -279,11 +275,11 @@ int ManageWRAM (u8 direction, u8 device)
             CARD_Delete(CARDSLOT, "TEMP");
           }
 
-          /* always delete existing slot */
+          // always delete existing slot
           CARD_Delete(CARDSLOT, filename);
         }
 
-        /*** Create a new slot ***/
+        // Create a new slot
         CardError = CARD_Create (CARDSLOT, filename, blocks, &CardFile);
         if (CardError)
         {
@@ -293,7 +289,7 @@ int ManageWRAM (u8 direction, u8 device)
           return 0;
         }
 
-        /*** Continue and save ***/
+      // Continue and save
       CARD_GetStatus(CARDSLOT, CardFile.filenum, &CardStatus);
       CardStatus.icon_addr = 0x0;
       CardStatus.icon_fmt = 2;
@@ -301,8 +297,8 @@ int ManageWRAM (u8 direction, u8 device)
       CardStatus.comment_addr = 2048;
       CARD_SetStatus(CARDSLOT, CardFile.filenum, &CardStatus);
 
-        /*** And write the blocks out ***/
-        sbo = 0;
+      // And write the blocks out
+      sbo = 0;
       while ( outbytes > 0 )
       {
           CardError = CARD_Write (&CardFile, &savebuffer[sbo], SectorSize, sbo);
@@ -316,7 +312,7 @@ int ManageWRAM (u8 direction, u8 device)
         WaitPrompt (action);
         return 1;
 
-    default: /*** Loading ***/
+    default: // Loading
       if (!CardFileExists (filename, CARDSLOT))
       {
         WaitPrompt ("No Save File Found");
@@ -338,7 +334,7 @@ int ManageWRAM (u8 direction, u8 device)
       if (blocks < SectorSize) blocks = SectorSize;
       if (blocks % SectorSize) blocks++;
 
-      /*** Just read the file back in ***/
+      // Just read the file back in
       sbo = 0;
       int size = blocks;
       while (blocks > 0)
@@ -355,12 +351,12 @@ int ManageWRAM (u8 direction, u8 device)
       ResetSound();
       savetimer = 0;
 
-      /*** Inform user ***/
+      // Inform user
       sprintf (action, "Loaded %d bytes successfully", size);
       WaitPrompt (action);
     return 1;
     }
   }
   else WaitPrompt ("Unable to mount memory card");
-  return 0; /*** Signal failure ***/
+  return 0; // Signal failure
 }

@@ -498,6 +498,9 @@ void patch_rom(char* filename, int offset, UChar value)
   fclose(f);
 }
 
+
+// Gamecube compiler error suppression
+/*
 char *
 strupr(char *s)
 {
@@ -509,6 +512,16 @@ strupr(char *s)
     }
   return t;
 }
+*/
+
+
+char* strupr(char *s)
+{
+  char *t = s;
+    while ((*s = (char)toupper((unsigned char) *s))) s++;
+  return t;
+}
+
 
 #if !defined(FREEBSD)
 char *

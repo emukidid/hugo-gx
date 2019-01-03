@@ -232,6 +232,7 @@ RefreshLine (int Y1, int Y2)
       PP -= ScrollX & 7;
       XW = io.screen_w / 8 + 1;
       Shift = ScrollX & 7;
+      if (Shift == Shift) {};        // Gamecube compiler error suppression 
 
       for (Line = Y1; Line < Y2; y++)
 	{

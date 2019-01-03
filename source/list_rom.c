@@ -9805,8 +9805,9 @@ void pce_build_romlist(void)
       return;
     }
     pce_romlist[i].note = strdup(line);
-
-    if (fscanf(rlf, "%d\n", &pce_romlist[i].flags) == EOF) {
+    
+//  if (fscanf(rlf, "%d\n", &pce_romlist[i].flags) == EOF) {       // Gamecube compiler error suppression
+    if (fscanf(rlf, "%hu\n", &pce_romlist[i].flags) == EOF) {
       pce_build_romlist_fail(rlf, i);
       return;
     }

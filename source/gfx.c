@@ -506,7 +506,7 @@ Loop6502()
           /*@ =unrecog */
 #endif
           /*@-preproc */
-#warning "place this better"
+//#warning "place this better"       // Gamecube compiler error suppression
           /*@=preproc */
           if (CheckSprites ())
             io.vdc_status |= VDC_SpHit;

@@ -24,16 +24,15 @@ extern void ResetSound();
  ****************************************************************************/
 static void PCEAudio ()
 {
-  AUDIO_StopDMA ();
+// AUDIO_StopDMA ();
   DCFlushRange (SoundBuffer[whichab], AUDIOBUFFER);
+  whichab ^= 1;
+  memset (SoundBuffer[whichab], 0, AUDIOBUFFER);
   AUDIO_InitDMA ((u32) SoundBuffer[whichab], AUDIOBUFFER);
   AUDIO_StartDMA ();
 
-  whichab ^= 1;
-  memset (SoundBuffer[whichab], 0, AUDIOBUFFER);
-
   if (!gamepaused)
-		/*** Call the Hu-Go! Sound Generator ***/
+    // Call the Hu-Go! Sound Generator
     MixStereoSound ((short *) SoundBuffer[whichab], AUDIOBUFFER >> 2);
 }
 
@@ -45,29 +44,29 @@ static void PCEAudio ()
  ****************************************************************************/
 int osd_snd_init_sound(void)
 {
-	/*** Required values for Nintendo Gamecube ***/
-	host.sound.stereo = 1;
-	host.sound.sample_size = 512;
-	host.sound.freq = 32000;
-	host.sound.signed_sound = 1;
+  // Required values for Nintendo Gamecube
+  host.sound.stereo = 1;
+  host.sound.sample_size = 512;
+  host.sound.freq = 32000;
+  host.sound.signed_sound = 1;
 
-  /*** Start audio subsystem ***/
+  // Start audio subsystem
   AUDIO_Init (NULL);
 
   memset (SoundBuffer[0], 0, AUDIOBUFFER << 1);
 
-	/*** Set default samplerate to 32khz ***/
+  // Set default samplerate to 32khz
   AUDIO_SetDSPSampleRate (AI_SAMPLERATE_32KHZ);
 
-	/*** and the DMA Callback ***/
+  // and the DMA Callback
   AUDIO_RegisterDMACallback (PCEAudio);
   DCFlushRange ((char *) SoundBuffer[0], AUDIOBUFFER);
   PCEAudio ();
 
-  /*** initialize PSG channels */
+  // initialize PSG channels
   InitPSG( host.sound.freq );
 
-	return 1;
+  return 1;
 }
 
 void osd_snd_trash_sound(void)

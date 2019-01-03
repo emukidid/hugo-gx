@@ -1,6 +1,34 @@
 HUGOGC CHANGELOG:
 ---------------
 
+02/14/2013: ( Version 2.12.1 - unofficial NGC release )
+-----------
+[NGC]
+- Various code changes to fix compiler errors and supress "most" compiler warnings
+- Fixed start up crash which occurs after compiling against latest resources (devkitPPC r26 and libogc 1.8.11.1)
+- Updated automatic TV mode detection (based on GC IPL version)
+- SDHC support
+- Added Safemode Menu display:
+   . Force Menu to display 480i video with Digital Component cable (CRT SDTV compatibility)
+   . Hold START button during bootup to activate
+- Video display enhancements. Supported video types:
+   . 480i/480p normal/stretch
+   . 576i/576p normal/stretch
+   . 240p TGX native resolution
+   . Progressive video option is only displayed if Component cable is detected
+- (EXPERIMENTAL) Added reconfigurable video modes and video mode enhancements in OPTIONS menu:
+   . Force Interlaced or Progressive mode over Digital Component cable as in game display
+- (EXPERIMENTAL) Slow Motion Support: use R trigger to turn on/off (rapid pause)
+- X Y Rapid Fire buttons fix:
+   . Removed the need to press "L" button + Rapid Fire button to activate/deactivate
+   . Single press of button X or Y will now activate/deactivate Rapid Fire
+   . Resolved open issue #21 on official googlecode
+- Added "Stop DVD Motor" command at bootup
+- Menu enhancements:
+   . Fixed Menu to correctly display "Stop DVD Motor" option
+   . WRAM manager moved to OPTIONS menu
+   . Startup "Credits" moved to OPTIONS menu
+
 14/12/2008:
 -----------
 [NGC/WII]

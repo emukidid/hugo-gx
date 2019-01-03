@@ -90,7 +90,7 @@ u32 dvd_read (void *dst, u32 len, u64 offset)
  ****************************************************************************/
 void dvd_motor_off( )
 {
-  ShowAction("Stopping DVD drive...");
+//  ShowAction("Stopping DVD drive...");
 
 #ifndef HW_RVL
   dvd[0] = 0x2e;
