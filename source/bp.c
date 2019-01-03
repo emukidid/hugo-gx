@@ -16,79 +16,79 @@
 #include "debug.h"
 #include "h6280.h"
 
-int handle_bp(int nb_bp);
+UInt32 handle_bp(UInt32 nb_bp);
 
-int handle_bp0()
+UInt32 handle_bp0()
 {
   return handle_bp(0);
 }
 
-int handle_bp1()
+UInt32 handle_bp1()
 {
   return handle_bp(1);
 }
 
-int handle_bp2()
+UInt32 handle_bp2()
 {
   return handle_bp(2);
 }
 
-int handle_bp3()
+UInt32 handle_bp3()
 {
   return handle_bp(3);
 }
 
-int handle_bp4()
+UInt32 handle_bp4()
 {
   return handle_bp(4);
 }
 
-int handle_bp5()
+UInt32 handle_bp5()
 {
   return handle_bp(5);
 }
 
-int handle_bp6()
+UInt32 handle_bp6()
 {
   return handle_bp(6);
 }
 
-int handle_bp7()
+UInt32 handle_bp7()
 {
   return handle_bp(7);
 }
 
-int handle_bp8()
+UInt32 handle_bp8()
 {
   return handle_bp(8);
 }
 
-int handle_bp9()
+UInt32 handle_bp9()
 {
   return handle_bp(9);
 }
 
-int handle_bp10()
+UInt32 handle_bp10()
 {
   return handle_bp(10);
 }
 
-int handle_bp11()
+UInt32 handle_bp11()
 {
   return handle_bp(11);
 }
 
-int handle_bp12()
+UInt32 handle_bp12()
 {
   return handle_bp(12);
 }
 
-int handle_bp13()
+UInt32 handle_bp13()
 {
   return handle_bp(13);
 }
 
-int handle_bp(int nb_bp)
+UInt32 handle_bp(UInt32 nb_bp)
 {
 
 #ifndef FINAL_RELEASE
@@ -134,7 +134,7 @@ int handle_bp(int nb_bp)
 
 }
 
-int
+UInt32
 handle_bp14()
 {
      // We must restore the Bp_to_restore Breakpoint
@@ -155,7 +155,7 @@ handle_bp14()
      return 0;
 }
 
-int
+UInt32
 handle_bp15(){
    // We must make it disappear and call the disassembler
 

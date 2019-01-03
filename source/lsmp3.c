@@ -139,17 +139,17 @@ MP3_length (char *argv)
   unsigned char *pBufEnd;
   int Layer;
   int BitRateIdx;
-  int Frq;
+//  int Frq;
   int MajorVer;
-  int MinorVer = 0;
+//  int MinorVer = 0;
   int KbPerSec = 0;
-  int Mode;
-  int Emphasis;
-  int fCRC = 0;
-  int fPadding = 0;
-  int fPrivate = 0;
-  int fCopyright = 0;
-  int fOriginal = 0;
+//  int Mode;
+//  int Emphasis;
+//  int fCRC = 0;
+//  int fPadding = 0;
+//  int fPrivate = 0;
+//  int fCopyright = 0;
+//  int fOriginal = 0;
   uint4 Head;
   long n;
 /*   long Length; */
@@ -206,30 +206,30 @@ MP3_length (char *argv)
 		if (Head & 0x00080000)
 		  {		/* MPEG 1.0 */
 		    MajorVer = 1;
-		    Frq = FrqTab[0x03 & (Head >> 10)];
+		   // Frq = FrqTab[0x03 & (Head >> 10)];
 		  }
 		else
 		  {		/* MPEG 2.0 */
 		    MajorVer = 2;
-		    Frq = FrqTab[3 + (0x03 & (Head >> 10))];
+		   // Frq = FrqTab[3 + (0x03 & (Head >> 10))];
 		  }
-		MinorVer = 0;
+		//MinorVer = 0;
 	      }
 	    else
 	      {			/* "MPEG 2.5" */
-		Frq = FrqTab[6];
+		//Frq = FrqTab[6];
 		MajorVer = 2;
-		MinorVer = 5;
+		//MinorVer = 5;
 	      }
 
 	    KbPerSec = KbPerSecTab[MajorVer - 1][4 - Layer][BitRateIdx];
 
-	    Mode = 0x03 & (Head >> 6);
+	    //Mode = 0x03 & (Head >> 6);
 
 	    /* If the protecion bit is NOT set then a 16bit CRC follows
 	     * the frame header
 	     */
-	    if (!(Head & 0x10000))
+/*	    if (!(Head & 0x10000))
 	      fCRC = 1;
 
 	    if (Head & 0x0200)
@@ -244,18 +244,7 @@ MP3_length (char *argv)
 	    if (Head & 0x04)
 	      fOriginal = 1;
 
-	    Emphasis = Head & 0x3;
-
-	      // Gamecube compiler error suppression
-	      if ( MinorVer == MinorVer ) {};
-	      if ( Frq == Frq ) {};
-	      if ( Mode == Mode ) {};
-	      if ( fCRC == fCRC ) {};
-	      if ( fPadding == fPadding ) {};
-	      if ( fPrivate == fPrivate ) {};
-	      if ( fCopyright == fCopyright ) {};    
-	      if ( fOriginal == fOriginal ) {};
-	      if ( Emphasis == Emphasis ) {};
+	    Emphasis = Head & 0x3;*/
 
 	    break;
 	  }

@@ -313,7 +313,7 @@ const char *cdbios_functions(int index)
 #endif
 
 
-void handle_bios(void)
+UInt32 handle_bios(void)
 {
 #ifdef CD_DEBUG
   static int last_op = -1, last_ax = -1, last_bx = -1, last_cx = -1, last_dx = -1;
@@ -1083,4 +1083,5 @@ void handle_bios(void)
       put_8bit_addr( (UInt16)(reg_pc), CDBIOS_replace[imm_operand( (UInt16)(reg_pc + 1))][0]);
       put_8bit_addr( (UInt16)(reg_pc + 1), CDBIOS_replace[imm_operand( (UInt16)(reg_pc + 1))][1]);
   }
+  return 0;
 }

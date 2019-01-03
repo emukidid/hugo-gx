@@ -75,6 +75,17 @@ Log (char *format, ...)
   fprintf (log_file, buf);
   fflush (log_file);
   fclose (log_file);
+#else
+	/*va_list list;
+	char msg[512];
+
+	va_start(list, format);
+	vsprintf(msg, format, list);
+	va_end(list);
+	int size = strlen(msg);
+	//usb_sendbuffer_safe(1, &size,4);
+	usb_sendbuffer_safe(1, msg,size);
+	usb_flush(1);*/
 #endif
 }
 

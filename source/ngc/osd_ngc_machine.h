@@ -17,7 +17,7 @@
 #include <sys/dir.h>
 #include <sys/unistd.h>
 
-
+#define MAXPATHLEN 512
 #define DEFAULT_PATH "/hugo"
 
 extern bool fat_enabled;

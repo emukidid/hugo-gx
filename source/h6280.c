@@ -59,7 +59,7 @@ UChar flnz_list[256] = {
 //
 //  as a function:
 
-inline UChar imm_operand(UInt16 addr) {
+inline UChar imm_operand(UInt16 addr) { 
   register unsigned short int memreg = addr>>13;
   return( (UChar) (PageR[memreg][addr]));
 }
@@ -243,7 +243,7 @@ void sbc(UChar val) {
   }
 }
 
-int adc_abs(void) {
+UInt32 adc_abs(void) {
 // if flag 'T' is set, use zero-page address specified by register 'X'
 // as the accumulator...
 
@@ -258,7 +258,7 @@ int adc_abs(void) {
   return 0;
 }
 
-int adc_absx(void) {
+UInt32 adc_absx(void) {
   if (reg_p & FL_T) {
     put_8bit_zp(reg_x, adc(get_8bit_zp(reg_x), absx_operand(reg_pc+1)));
     cycles+=8;
@@ -270,7 +270,7 @@ int adc_absx(void) {
   return 0;
 }
 
-int adc_absy(void) {
+UInt32 adc_absy(void) {
   if (reg_p & FL_T) {
     put_8bit_zp(reg_x, adc(get_8bit_zp(reg_x), absy_operand(reg_pc+1)));
     cycles+=8;
@@ -282,7 +282,7 @@ int adc_absy(void) {
   return 0;
 }
 
-int adc_imm(void) {
+UInt32 adc_imm(void) {
   if (reg_p & FL_T) {
     put_8bit_zp(reg_x, adc(get_8bit_zp(reg_x), imm_operand(reg_pc+1)));
     cycles+=5;
@@ -294,7 +294,7 @@ int adc_imm(void) {
   return 0;
 }
 
-int adc_zp(void) {
+UInt32 adc_zp(void) {
   if (reg_p & FL_T) {
     put_8bit_zp(reg_x, adc(get_8bit_zp(reg_x), zp_operand(reg_pc+1)));
     cycles+=7;
@@ -306,7 +306,7 @@ int adc_zp(void) {
   return 0;
 }
 
-int adc_zpx(void) {
+UInt32 adc_zpx(void) {
   if (reg_p & FL_T) {
     put_8bit_zp(reg_x, adc(get_8bit_zp(reg_x), zpx_operand(reg_pc+1)));
     cycles+=7;
@@ -318,7 +318,7 @@ int adc_zpx(void) {
   return 0;
 }
 
-int adc_zpind(void) {
+UInt32 adc_zpind(void) {
   if (reg_p & FL_T) {
     put_8bit_zp(reg_x, adc(get_8bit_zp(reg_x), zpind_operand(reg_pc+1)));
     cycles+=10;
@@ -330,7 +330,7 @@ int adc_zpind(void) {
   return 0;
 }
 
-int adc_zpindx(void) {
+UInt32 adc_zpindx(void) {
   if (reg_p & FL_T) {
     put_8bit_zp(reg_x, adc(get_8bit_zp(reg_x), zpindx_operand(reg_pc+1)));
     cycles+=10;
@@ -342,7 +342,7 @@ int adc_zpindx(void) {
   return 0;
 }
 
-int adc_zpindy(void) {
+UInt32 adc_zpindy(void) {
   if (reg_p & FL_T) {
     put_8bit_zp(reg_x, adc(get_8bit_zp(reg_x), zpindy_operand(reg_pc+1)));
     cycles+=10;
@@ -354,7 +354,7 @@ int adc_zpindy(void) {
   return 0;
 }
 
-int and_abs(void) {
+UInt32 and_abs(void) {
   if (reg_p & FL_T) {
     UChar temp = get_8bit_zp(reg_x);
     chk_flnz_8bit(temp &= abs_operand(reg_pc+1));
@@ -369,7 +369,7 @@ int and_abs(void) {
   return 0;
 }
 
-int and_absx(void) {
+UInt32 and_absx(void) {
   if (reg_p & FL_T) {
     UChar temp = get_8bit_zp(reg_x);
     chk_flnz_8bit(temp &= absx_operand(reg_pc+1));
@@ -384,7 +384,7 @@ int and_absx(void) {
   return 0;
 }
 
-int and_absy(void) {
+UInt32 and_absy(void) {
   if (reg_p & FL_T) {
     UChar temp = get_8bit_zp(reg_x);
     chk_flnz_8bit(temp &= absy_operand(reg_pc+1));
@@ -399,7 +399,7 @@ int and_absy(void) {
   return 0;
 }
 
-int and_imm(void) {
+UInt32 and_imm(void) {
   if (reg_p & FL_T) {
     UChar temp = get_8bit_zp(reg_x);
     chk_flnz_8bit(temp &= imm_operand(reg_pc+1));
@@ -414,7 +414,7 @@ int and_imm(void) {
   return 0;
 }
 
-int and_zp(void) {
+UInt32 and_zp(void) {
   if (reg_p & FL_T) {
     UChar temp = get_8bit_zp(reg_x);
     chk_flnz_8bit(temp &= zp_operand(reg_pc+1));
@@ -429,7 +429,7 @@ int and_zp(void) {
   return 0;
 }
 
-int and_zpx(void) {
+UInt32 and_zpx(void) {
   if (reg_p & FL_T) {
     UChar temp = get_8bit_zp(reg_x);
     chk_flnz_8bit(temp &= zpx_operand(reg_pc+1));
@@ -444,7 +444,7 @@ int and_zpx(void) {
   return 0;
 }
 
-int and_zpind(void) {
+UInt32 and_zpind(void) {
   if (reg_p & FL_T) {
     UChar temp = get_8bit_zp(reg_x);
     chk_flnz_8bit(temp &= zpind_operand(reg_pc+1));
@@ -459,7 +459,7 @@ int and_zpind(void) {
   return 0;
 }
 
-int and_zpindx(void) {
+UInt32 and_zpindx(void) {
   if (reg_p & FL_T) {
     UChar temp = get_8bit_zp(reg_x);
     chk_flnz_8bit(temp &= zpindx_operand(reg_pc+1));
@@ -474,7 +474,7 @@ int and_zpindx(void) {
   return 0;
 }
 
-int and_zpindy(void) {
+UInt32 and_zpindy(void) {
   if (reg_p & FL_T) {
     UChar temp = get_8bit_zp(reg_x);
     chk_flnz_8bit(temp &= zpindy_operand(reg_pc+1));
@@ -489,7 +489,7 @@ int and_zpindy(void) {
   return 0;
 }
 
-int asl_a(void) {
+UInt32 asl_a(void) {
   UChar temp1 = reg_a;
   reg_a<<=1;
   reg_p = (reg_p & ~(FL_N|FL_T|FL_Z|FL_C))
@@ -500,7 +500,7 @@ int asl_a(void) {
   return 0;
 }
 
-int asl_abs(void) {
+UInt32 asl_abs(void) {
   UInt16 temp_addr = get_16bit_addr(reg_pc+1);
   UChar  temp1	   = get_8bit_addr(temp_addr);
   UChar  temp	   = temp1<<1;
@@ -515,7 +515,7 @@ int asl_abs(void) {
   return 0;
 }
 
-int asl_absx(void) {
+UInt32 asl_absx(void) {
   UInt16 temp_addr = get_16bit_addr(reg_pc+1)+reg_x;
   UChar  temp1	   = get_8bit_addr(temp_addr);
   UChar  temp	   = temp1<<1;
@@ -529,7 +529,7 @@ int asl_absx(void) {
   return 0;
 }
 
-int asl_zp(void) {
+UInt32 asl_zp(void) {
   UChar zp_addr = imm_operand(reg_pc+1);
   UChar temp1	= get_8bit_zp(zp_addr);
   UChar temp	= temp1<<1;
@@ -543,7 +543,7 @@ int asl_zp(void) {
   return 0;
 }
 
-int asl_zpx(void) {
+UInt32 asl_zpx(void) {
   UChar  zp_addr = imm_operand(reg_pc+1)+reg_x;
   UChar  temp1	 = get_8bit_zp(zp_addr);
   UChar  temp	 = temp1<<1;
@@ -557,7 +557,7 @@ int asl_zpx(void) {
   return 0;
 }
 
-int bbr0(void) {
+UInt32 bbr0(void) {
   reg_p &= ~FL_T;
   if (zp_operand(reg_pc+1)&0x01) {
     reg_pc+=3;
@@ -569,7 +569,7 @@ int bbr0(void) {
   return 0;
 }
 
-int bbr1(void) {
+UInt32 bbr1(void) {
   reg_p &= ~FL_T;
   if (zp_operand(reg_pc+1)&0x02) {
     reg_pc+=3;
@@ -581,7 +581,7 @@ int bbr1(void) {
   return 0;
 }
 
-int bbr2(void) {
+UInt32 bbr2(void) {
   reg_p &= ~FL_T;
   if (zp_operand(reg_pc+1)&0x04) {
     reg_pc+=3;
@@ -593,7 +593,7 @@ int bbr2(void) {
   return 0;
 }
 
-int bbr3(void) {
+UInt32 bbr3(void) {
   reg_p &= ~FL_T;
   if (zp_operand(reg_pc+1)&0x08) {
     reg_pc+=3;
@@ -605,7 +605,7 @@ int bbr3(void) {
   return 0;
 }
 
-int bbr4(void) {
+UInt32 bbr4(void) {
   reg_p &= ~FL_T;
   if (zp_operand(reg_pc+1)&0x10) {
     reg_pc+=3;
@@ -617,7 +617,7 @@ int bbr4(void) {
   return 0;
 }
 
-int bbr5(void) {
+UInt32 bbr5(void) {
   reg_p &= ~FL_T;
   if (zp_operand(reg_pc+1)&0x20) {
     reg_pc+=3;
@@ -629,7 +629,7 @@ int bbr5(void) {
   return 0;
 }
 
-int bbr6(void) {
+UInt32 bbr6(void) {
   reg_p &= ~FL_T;
   if (zp_operand(reg_pc+1)&0x40) {
     reg_pc+=3;
@@ -641,7 +641,7 @@ int bbr6(void) {
   return 0;
 }
 
-int bbr7(void) {
+UInt32 bbr7(void) {
   reg_p &= ~FL_T;
   if (zp_operand(reg_pc+1)&0x80) {
     reg_pc+=3;
@@ -653,7 +653,7 @@ int bbr7(void) {
   return 0;
 }
 
-int bbs0(void) {
+UInt32 bbs0(void) {
   reg_p &= ~FL_T;
   if (zp_operand(reg_pc+1)&0x01) {
     reg_pc+=(Char)imm_operand(reg_pc+2)+3;
@@ -665,7 +665,7 @@ int bbs0(void) {
   return 0;
 }
 
-int bbs1(void) {
+UInt32 bbs1(void) {
   reg_p &= ~FL_T;
   if (zp_operand(reg_pc+1)&0x02) {
     reg_pc+=(Char)imm_operand(reg_pc+2)+3;
@@ -677,7 +677,7 @@ int bbs1(void) {
   return 0;
 }
 
-int bbs2(void) {
+UInt32 bbs2(void) {
   reg_p &= ~FL_T;
   if (zp_operand(reg_pc+1)&0x04) {
     reg_pc+=(Char)imm_operand(reg_pc+2)+3;
@@ -689,7 +689,7 @@ int bbs2(void) {
   return 0;
 }
 
-int bbs3(void) {
+UInt32 bbs3(void) {
   reg_p &= ~FL_T;
   if (zp_operand(reg_pc+1)&0x08) {
     reg_pc+=(Char)imm_operand(reg_pc+2)+3;
@@ -701,7 +701,7 @@ int bbs3(void) {
   return 0;
 }
 
-int bbs4(void) {
+UInt32 bbs4(void) {
   reg_p &= ~FL_T;
   if (zp_operand(reg_pc+1)&0x10) {
     reg_pc+=(Char)imm_operand(reg_pc+2)+3;
@@ -713,7 +713,7 @@ int bbs4(void) {
   return 0;
 }
 
-int bbs5(void) {
+UInt32 bbs5(void) {
   reg_p &= ~FL_T;
   if (zp_operand(reg_pc+1)&0x20) {
     reg_pc+=(Char)imm_operand(reg_pc+2)+3;
@@ -725,7 +725,7 @@ int bbs5(void) {
   return 0;
 }
 
-int bbs6(void) {
+UInt32 bbs6(void) {
   reg_p &= ~FL_T;
   if (zp_operand(reg_pc+1)&0x40) {
     reg_pc+=(Char)imm_operand(reg_pc+2)+3;
@@ -737,7 +737,7 @@ int bbs6(void) {
   return 0;
 }
 
-int bbs7(void) {
+UInt32 bbs7(void) {
   reg_p &= ~FL_T;
   if (zp_operand(reg_pc+1)&0x80) {
     reg_pc+=(Char)imm_operand(reg_pc+2)+3;
@@ -749,7 +749,7 @@ int bbs7(void) {
   return 0;
 }
 
-int bcc(void) {
+UInt32 bcc(void) {
   reg_p &= ~FL_T;
   if (reg_p & FL_C) {
     reg_pc+=2;
@@ -761,7 +761,7 @@ int bcc(void) {
   return 0;
 }
 
-int bcs(void) {
+UInt32 bcs(void) {
   reg_p &= ~FL_T;
   if (reg_p & FL_C) {
     reg_pc+=(Char)imm_operand(reg_pc+1)+2;
@@ -773,7 +773,7 @@ int bcs(void) {
   return 0;
 }
 
-int beq(void) {
+UInt32 beq(void) {
   reg_p &= ~FL_T;
   if (reg_p & FL_Z) {
     reg_pc+=(Char)imm_operand(reg_pc+1)+2;
@@ -785,7 +785,7 @@ int beq(void) {
   return 0;
 }
 
-int bit_abs(void) {
+UInt32 bit_abs(void) {
   UChar temp = abs_operand(reg_pc+1);
   reg_p = (reg_p & ~(FL_N|FL_V|FL_T|FL_Z))
 	  | ((temp&0x80)  ? FL_N:0)
@@ -796,7 +796,7 @@ int bit_abs(void) {
   return 0;
 }
 
-int bit_absx(void) {
+UInt32 bit_absx(void) {
   UChar temp = absx_operand(reg_pc+1);
   reg_p = (reg_p & ~(FL_N|FL_V|FL_T|FL_Z))
 	  | ((temp&0x80)  ? FL_N:0)
@@ -807,7 +807,7 @@ int bit_absx(void) {
   return 0;
 }
 
-int bit_imm(void) {
+UInt32 bit_imm(void) {
 // orig code (Eyes/Lichty said immediate mode did not affect
 //            'N' and 'V' flags):
 //reg_p = (reg_p & ~(FL_T|FL_Z))
@@ -823,7 +823,7 @@ int bit_imm(void) {
   return 0;
 }
 
-int bit_zp(void) {
+UInt32 bit_zp(void) {
   UChar temp = zp_operand(reg_pc+1);
   reg_p = (reg_p & ~(FL_N|FL_V|FL_T|FL_Z))
 	  | ((temp&0x80)  ? FL_N:0)
@@ -834,7 +834,7 @@ int bit_zp(void) {
   return 0;
 }
 
-int bit_zpx(void) {
+UInt32 bit_zpx(void) {
   UChar temp = zpx_operand(reg_pc+1);
   reg_p = (reg_p & ~(FL_N|FL_V|FL_T|FL_Z))
 	  | ((temp&0x80)  ? FL_N:0)
@@ -845,7 +845,7 @@ int bit_zpx(void) {
   return 0;
 }
 
-int bmi(void) {
+UInt32 bmi(void) {
   reg_p &= ~FL_T;
   if (reg_p & FL_N) {
     reg_pc+=(Char)imm_operand(reg_pc+1)+2;
@@ -857,7 +857,7 @@ int bmi(void) {
   return 0;
 }
 
-int bne(void) {
+UInt32 bne(void) {
   reg_p &= ~FL_T;
   if (reg_p & FL_Z) {
     reg_pc+=2;
@@ -869,7 +869,7 @@ int bne(void) {
   return 0;
 }
 
-int bpl(void) {
+UInt32 bpl(void) {
   reg_p &= ~FL_T;
   if (reg_p & FL_N) {
     reg_pc+=2;
@@ -881,14 +881,14 @@ int bpl(void) {
   return 0;
 }
 
-int bra(void) {
+UInt32 bra(void) {
   reg_p &= ~FL_T;
   reg_pc+=(Char)imm_operand(reg_pc+1)+2;
   cycles+=4;
   return 0;
 }
 
-int brek(void) {
+UInt32 brek(void) {
 #if defined(KERNEL_DEBUG)
   fprintf(stderr, "BRK opcode has been hit [PC = 0x%04x] at %s(%d)\n", reg_pc, __FILE__, __LINE__);
 #endif
@@ -901,7 +901,7 @@ int brek(void) {
   return 0;
 }
 
-int bsr(void) {
+UInt32 bsr(void) {
   reg_p &= ~FL_T;
   push_16bit(reg_pc+1);
   reg_pc+=(Char)imm_operand(reg_pc+1)+2;
@@ -909,7 +909,7 @@ int bsr(void) {
   return 0;
 }
 
-int bvc(void) {
+UInt32 bvc(void) {
   reg_p &= ~FL_T;
   if (reg_p & FL_V) {
     reg_pc+=2;
@@ -921,7 +921,7 @@ int bvc(void) {
   return 0;
 }
 
-int bvs(void) {
+UInt32 bvs(void) {
   reg_p &= ~FL_T;
   if (reg_p & FL_V) {
     reg_pc+=(Char)imm_operand(reg_pc+1)+2;
@@ -933,7 +933,7 @@ int bvs(void) {
   return 0;
 }
 
-int cla(void) {
+UInt32 cla(void) {
   reg_p &= ~FL_T;
   reg_a = 0;
   reg_pc++;
@@ -941,35 +941,35 @@ int cla(void) {
   return 0;
 }
 
-int clc(void) {
+UInt32 clc(void) {
   reg_p &= ~(FL_T|FL_C);
   reg_pc++;
   cycles+=2;
   return 0;
 }
 
-int cld(void) {
+UInt32 cld(void) {
   reg_p &= ~(FL_T|FL_D);
   reg_pc++;
   cycles+=2;
   return 0;
 }
 
-int cli(void) {
+UInt32 cli(void) {
   reg_p &= ~(FL_T|FL_I);
   reg_pc++;
   cycles+=2;
   return 0;
 }
 
-int clv(void) {
+UInt32 clv(void) {
   reg_p &= ~(FL_V|FL_T);
   reg_pc++;
   cycles+=2;
   return 0;
 }
 
-int clx(void) {
+UInt32 clx(void) {
   reg_p &= ~FL_T;
   reg_x = 0;
   reg_pc++;
@@ -977,7 +977,7 @@ int clx(void) {
   return 0;
 }
 
-int cly(void) {
+UInt32 cly(void) {
   reg_p &= ~FL_T;
   reg_y = 0;
   reg_pc++;
@@ -985,7 +985,7 @@ int cly(void) {
   return 0;
 }
 
-int cmp_abs(void) {
+UInt32 cmp_abs(void) {
   UChar temp = abs_operand(reg_pc+1);
 
   reg_p = (reg_p & ~(FL_N|FL_T|FL_Z|FL_C))
@@ -996,7 +996,7 @@ int cmp_abs(void) {
   return 0;
 }
 
-int cmp_absx(void) {
+UInt32 cmp_absx(void) {
   UChar temp = absx_operand(reg_pc+1);
 
   reg_p = (reg_p & ~(FL_N|FL_T|FL_Z|FL_C))
@@ -1007,7 +1007,7 @@ int cmp_absx(void) {
   return 0;
 }
 
-int cmp_absy(void) {
+UInt32 cmp_absy(void) {
   UChar temp = absy_operand(reg_pc+1);
 
   reg_p = (reg_p & ~(FL_N|FL_T|FL_Z|FL_C))
@@ -1018,7 +1018,7 @@ int cmp_absy(void) {
   return 0;
 }
 
-int cmp_imm(void) {
+UInt32 cmp_imm(void) {
   UChar temp = imm_operand(reg_pc+1);
 
   reg_p = (reg_p & ~(FL_N|FL_T|FL_Z|FL_C))
@@ -1029,7 +1029,7 @@ int cmp_imm(void) {
   return 0;
 }
 
-int cmp_zp(void) {
+UInt32 cmp_zp(void) {
   UChar temp = zp_operand(reg_pc+1);
 
   reg_p = (reg_p & ~(FL_N|FL_T|FL_Z|FL_C))
@@ -1040,7 +1040,7 @@ int cmp_zp(void) {
   return 0;
 }
 
-int cmp_zpx(void) {
+UInt32 cmp_zpx(void) {
   UChar temp = zpx_operand(reg_pc+1);
 
   reg_p = (reg_p & ~(FL_N|FL_T|FL_Z|FL_C))
@@ -1051,7 +1051,7 @@ int cmp_zpx(void) {
   return 0;
 }
 
-int cmp_zpind(void) {
+UInt32 cmp_zpind(void) {
   UChar temp = zpind_operand(reg_pc+1);
 
   reg_p = (reg_p & ~(FL_N|FL_T|FL_Z|FL_C))
@@ -1062,7 +1062,7 @@ int cmp_zpind(void) {
   return 0;
 }
 
-int cmp_zpindx(void) {
+UInt32 cmp_zpindx(void) {
   UChar temp = zpindx_operand(reg_pc+1);
 
   reg_p = (reg_p & ~(FL_N|FL_T|FL_Z|FL_C))
@@ -1073,7 +1073,7 @@ int cmp_zpindx(void) {
   return 0;
 }
 
-int cmp_zpindy(void) {
+UInt32 cmp_zpindy(void) {
   UChar temp = zpindy_operand(reg_pc+1);
 
   reg_p = (reg_p & ~(FL_N|FL_T|FL_Z|FL_C))
@@ -1084,7 +1084,7 @@ int cmp_zpindy(void) {
   return 0;
 }
 
-int cpx_abs(void) {
+UInt32 cpx_abs(void) {
   UChar temp = abs_operand(reg_pc+1);
 
   reg_p = (reg_p & ~(FL_N|FL_T|FL_Z|FL_C))
@@ -1095,7 +1095,7 @@ int cpx_abs(void) {
   return 0;
 }
 
-int cpx_imm(void) {
+UInt32 cpx_imm(void) {
   UChar temp = imm_operand(reg_pc+1);
 
   reg_p = (reg_p & ~(FL_N|FL_T|FL_Z|FL_C))
@@ -1106,7 +1106,7 @@ int cpx_imm(void) {
   return 0;
 }
 
-int cpx_zp(void) {
+UInt32 cpx_zp(void) {
   UChar temp = zp_operand(reg_pc+1);
 
   reg_p = (reg_p & ~(FL_N|FL_T|FL_Z|FL_C))
@@ -1117,7 +1117,7 @@ int cpx_zp(void) {
   return 0;
 }
 
-int cpy_abs(void) {
+UInt32 cpy_abs(void) {
   UChar temp = abs_operand(reg_pc+1);
 
   reg_p = (reg_p & ~(FL_N|FL_T|FL_Z|FL_C))
@@ -1128,7 +1128,7 @@ int cpy_abs(void) {
   return 0;
 }
 
-int cpy_imm(void) {
+UInt32 cpy_imm(void) {
   UChar temp = imm_operand(reg_pc+1);
 
   reg_p = (reg_p & ~(FL_N|FL_T|FL_Z|FL_C))
@@ -1139,7 +1139,7 @@ int cpy_imm(void) {
   return 0;
 }
 
-int cpy_zp(void) {
+UInt32 cpy_zp(void) {
   UChar temp = zp_operand(reg_pc+1);
 
   reg_p = (reg_p & ~(FL_N|FL_T|FL_Z|FL_C))
@@ -1150,28 +1150,28 @@ int cpy_zp(void) {
   return 0;
 }
 
-int csh(void) {
+UInt32 csh(void) {
   Cycles_per_Line = 454; /* 21477270 / 3 / 60 / 263 */ /* 7.16 Mhz CPU clock */
   reg_pc++;
   cycles+=3;
   return 0;
 }
 
-int csl(void) {
+UInt32 csl(void) {
   Cycles_per_Line = 113; /* 21477270 / 12 / 60 / 263 */ /* 1.78 Mhz CPU clock */
   reg_pc++;
   cycles+=3;
   return 0;
 }
 
-int dec_a(void) {
+UInt32 dec_a(void) {
   chk_flnz_8bit(--reg_a);
   reg_pc++;
   cycles+=2;
   return 0;
 }
 
-int dec_abs(void) {
+UInt32 dec_abs(void) {
   UChar  temp;
   UInt16 temp_addr = get_16bit_addr(reg_pc+1);
   chk_flnz_8bit(temp = get_8bit_addr(temp_addr)-1);
@@ -1181,7 +1181,7 @@ int dec_abs(void) {
   return 0;
 }
 
-int dec_absx(void) {
+UInt32 dec_absx(void) {
   UChar  temp;
   UInt16 temp_addr = get_16bit_addr(reg_pc+1)+reg_x;
   chk_flnz_8bit(temp = get_8bit_addr(temp_addr)-1);
@@ -1191,7 +1191,7 @@ int dec_absx(void) {
   return 0;
 }
 
-int dec_zp(void) {
+UInt32 dec_zp(void) {
   UChar  temp;
   UChar  zp_addr = imm_operand(reg_pc+1);
   chk_flnz_8bit(temp = get_8bit_zp(zp_addr)-1);
@@ -1201,7 +1201,7 @@ int dec_zp(void) {
   return 0;
 }
 
-int dec_zpx(void) {
+UInt32 dec_zpx(void) {
   UChar  temp;
   UChar  zp_addr = imm_operand(reg_pc+1)+reg_x;
   chk_flnz_8bit(temp = get_8bit_zp(zp_addr)-1);
@@ -1211,21 +1211,21 @@ int dec_zpx(void) {
   return 0;
 }
 
-int dex(void) {
+UInt32 dex(void) {
   chk_flnz_8bit(--reg_x);
   reg_pc++;
   cycles+=2;
   return 0;
 }
 
-int dey(void) {
+UInt32 dey(void) {
   chk_flnz_8bit(--reg_y);
   reg_pc++;
   cycles+=2;
   return 0;
 }
 
-int eor_abs(void) {
+UInt32 eor_abs(void) {
   if (reg_p & FL_T) {
     UChar temp = get_8bit_zp(reg_x);
     chk_flnz_8bit(temp ^= abs_operand(reg_pc+1));
@@ -1240,7 +1240,7 @@ int eor_abs(void) {
   return 0;
 }
 
-int eor_absx(void) {
+UInt32 eor_absx(void) {
   if (reg_p & FL_T) {
     UChar temp = get_8bit_zp(reg_x);
     chk_flnz_8bit(temp ^= absx_operand(reg_pc+1));
@@ -1255,7 +1255,7 @@ int eor_absx(void) {
   return 0;
 }
 
-int eor_absy(void) {
+UInt32 eor_absy(void) {
   if (reg_p & FL_T) {
     UChar temp = get_8bit_zp(reg_x);
     chk_flnz_8bit(temp ^= absy_operand(reg_pc+1));
@@ -1270,7 +1270,7 @@ int eor_absy(void) {
   return 0;
 }
 
-int eor_imm(void) {
+UInt32 eor_imm(void) {
   if (reg_p & FL_T) {
     UChar temp = get_8bit_zp(reg_x);
     chk_flnz_8bit(temp ^= imm_operand(reg_pc+1));
@@ -1285,7 +1285,7 @@ int eor_imm(void) {
   return 0;
 }
 
-int eor_zp(void) {
+UInt32 eor_zp(void) {
   if (reg_p & FL_T) {
     UChar temp = get_8bit_zp(reg_x);
     chk_flnz_8bit(temp ^= zp_operand(reg_pc+1));
@@ -1300,7 +1300,7 @@ int eor_zp(void) {
   return 0;
 }
 
-int eor_zpx(void) {
+UInt32 eor_zpx(void) {
   if (reg_p & FL_T) {
     UChar temp = get_8bit_zp(reg_x);
     chk_flnz_8bit(temp ^= zpx_operand(reg_pc+1));
@@ -1315,7 +1315,7 @@ int eor_zpx(void) {
   return 0;
 }
 
-int eor_zpind(void) {
+UInt32 eor_zpind(void) {
   if (reg_p & FL_T) {
     UChar temp = get_8bit_zp(reg_x);
     chk_flnz_8bit(temp ^= zpind_operand(reg_pc+1));
@@ -1330,7 +1330,7 @@ int eor_zpind(void) {
   return 0;
 }
 
-int eor_zpindx(void) {
+UInt32 eor_zpindx(void) {
   if (reg_p & FL_T) {
     UChar temp = get_8bit_zp(reg_x);
     chk_flnz_8bit(temp ^= zpindx_operand(reg_pc+1));
@@ -1345,7 +1345,7 @@ int eor_zpindx(void) {
   return 0;
 }
 
-int eor_zpindy(void) {
+UInt32 eor_zpindy(void) {
   if (reg_p & FL_T) {
     UChar temp = get_8bit_zp(reg_x);
     chk_flnz_8bit(temp ^= zpindy_operand(reg_pc+1));
@@ -1360,18 +1360,18 @@ int eor_zpindy(void) {
   return 0;
 }
 
-int halt(void) {
+UInt32 halt(void) {
   return(1);
 }
 
-int inc_a(void) {
+UInt32 inc_a(void) {
   chk_flnz_8bit(++reg_a);
   reg_pc++;
   cycles+=2;
   return 0;
 }
 
-int inc_abs(void) {
+UInt32 inc_abs(void) {
   UChar  temp;
   UInt16 temp_addr = get_16bit_addr(reg_pc+1);
   chk_flnz_8bit(temp = get_8bit_addr(temp_addr)+1);
@@ -1381,7 +1381,7 @@ int inc_abs(void) {
   return 0;
 }
 
-int inc_absx(void) {
+UInt32 inc_absx(void) {
   UChar  temp;
   UInt16 temp_addr = get_16bit_addr(reg_pc+1)+reg_x;
   chk_flnz_8bit(temp = get_8bit_addr(temp_addr)+1);
@@ -1391,7 +1391,7 @@ int inc_absx(void) {
   return 0;
 }
 
-int inc_zp(void) {
+UInt32 inc_zp(void) {
   UChar temp;
   UChar zp_addr = imm_operand(reg_pc+1);
   chk_flnz_8bit(temp = get_8bit_zp(zp_addr)+1);
@@ -1402,7 +1402,7 @@ int inc_zp(void) {
   return 0;
 }
 
-int inc_zpx(void) {
+UInt32 inc_zpx(void) {
   UChar temp;
   UChar zp_addr = imm_operand(reg_pc+1)+reg_x;
   chk_flnz_8bit(temp = get_8bit_zp(zp_addr)+1);
@@ -1412,42 +1412,42 @@ int inc_zpx(void) {
   return 0;
 }
 
-int inx(void) {
+UInt32 inx(void) {
   chk_flnz_8bit(++reg_x);
   reg_pc++;
   cycles+=2;
   return 0;
 }
 
-int iny(void) {
+UInt32 iny(void) {
   chk_flnz_8bit(++reg_y);
   reg_pc++;
   cycles+=2;
   return 0;
 }
 
-int jmp(void) {
+UInt32 jmp(void) {
   reg_p &= ~FL_T;
   reg_pc = get_16bit_addr(reg_pc+1);
   cycles+=4;
   return 0;
 }
 
-int jmp_absind(void) {
+UInt32 jmp_absind(void) {
   reg_p &= ~FL_T;
   reg_pc = get_16bit_addr(get_16bit_addr(reg_pc+1));
   cycles+=7;
   return 0;
 }
 
-int jmp_absindx(void) {
+UInt32 jmp_absindx(void) {
   reg_p &= ~FL_T;
   reg_pc = get_16bit_addr(get_16bit_addr(reg_pc+1)+reg_x);
   cycles+=7;
   return 0;
 }
 
-int jsr(void) {
+UInt32 jsr(void) {
   reg_p &= ~FL_T;
   push_16bit(reg_pc+2);
   reg_pc = get_16bit_addr(reg_pc+1);
@@ -1455,49 +1455,49 @@ int jsr(void) {
   return 0;
 }
 
-int lda_abs(void) {
+UInt32 lda_abs(void) {
   chk_flnz_8bit(reg_a = abs_operand(reg_pc+1));
   reg_pc+=3;
   cycles+=5;
   return 0;
 }
 
-int lda_absx(void) {
+UInt32 lda_absx(void) {
   chk_flnz_8bit(reg_a = absx_operand(reg_pc+1));
   reg_pc+=3;
   cycles+=5;
   return 0;
 }
 
-int lda_absy(void) {
+UInt32 lda_absy(void) {
   chk_flnz_8bit(reg_a = absy_operand(reg_pc+1));
   reg_pc+=3;
   cycles+=5;
   return 0;
 }
 
-int lda_imm(void) {
+UInt32 lda_imm(void) {
   chk_flnz_8bit(reg_a = imm_operand(reg_pc+1));
   reg_pc+=2;
   cycles+=2;
   return 0;
 }
 
-int lda_zp(void) {
+UInt32 lda_zp(void) {
   chk_flnz_8bit(reg_a = zp_operand(reg_pc+1));
   reg_pc+=2;
   cycles+=4;
   return 0;
 }
 
-int lda_zpx(void) {
+UInt32 lda_zpx(void) {
   chk_flnz_8bit(reg_a = zpx_operand(reg_pc+1));
   reg_pc+=2;
   cycles+=4;
   return 0;
 }
 
-int lda_zpind(void) {
+UInt32 lda_zpind(void) {
   chk_flnz_8bit(reg_a = zpind_operand(reg_pc+1));
 
   reg_pc+=2;
@@ -1505,91 +1505,91 @@ int lda_zpind(void) {
   return 0;
 }
 
-int lda_zpindx(void) {
+UInt32 lda_zpindx(void) {
   chk_flnz_8bit(reg_a = zpindx_operand(reg_pc+1));
   reg_pc+=2;
   cycles+=7;
   return 0;
 }
 
-int lda_zpindy(void) {
+UInt32 lda_zpindy(void) {
   chk_flnz_8bit(reg_a = zpindy_operand(reg_pc+1));
   reg_pc+=2;
   cycles+=7;
   return 0;
 }
 
-int ldx_abs(void) {
+UInt32 ldx_abs(void) {
   chk_flnz_8bit(reg_x = abs_operand(reg_pc+1));
   reg_pc+=3;
   cycles+=5;
   return 0;
 }
 
-int ldx_absy(void) {
+UInt32 ldx_absy(void) {
   chk_flnz_8bit(reg_x = absy_operand(reg_pc+1));
   reg_pc+=3;
   cycles+=5;
   return 0;
 }
 
-int ldx_imm(void) {
+UInt32 ldx_imm(void) {
   chk_flnz_8bit(reg_x = imm_operand(reg_pc+1));
   reg_pc+=2;
   cycles+=2;
   return 0;
 }
 
-int ldx_zp(void) {
+UInt32 ldx_zp(void) {
   chk_flnz_8bit(reg_x = zp_operand(reg_pc+1));
   reg_pc+=2;
   cycles+=4;
   return 0;
 }
 
-int ldx_zpy(void) {
+UInt32 ldx_zpy(void) {
   chk_flnz_8bit(reg_x = zpy_operand(reg_pc+1));
   reg_pc+=2;
   cycles+=4;
   return 0;
 }
 
-int ldy_abs(void) {
+UInt32 ldy_abs(void) {
   chk_flnz_8bit(reg_y = abs_operand(reg_pc+1));
   reg_pc+=3;
   cycles+=5;
   return 0;
 }
 
-int ldy_absx(void) {
+UInt32 ldy_absx(void) {
   chk_flnz_8bit(reg_y = absx_operand(reg_pc+1));
   reg_pc+=3;
   cycles+=5;
   return 0;
 }
 
-int ldy_imm(void) {
+UInt32 ldy_imm(void) {
   chk_flnz_8bit(reg_y = imm_operand(reg_pc+1));
   reg_pc+=2;
   cycles+=2;
   return 0;
 }
 
-int ldy_zp(void) {
+UInt32 ldy_zp(void) {
   chk_flnz_8bit(reg_y = zp_operand(reg_pc+1));
   reg_pc+=2;
   cycles+=4;
   return 0;
 }
 
-int ldy_zpx(void) {
+UInt32 ldy_zpx(void) {
   chk_flnz_8bit(reg_y = zpx_operand(reg_pc+1));
   reg_pc+=2;
   cycles+=4;
   return 0;
 }
 
-int lsr_a(void) {
+UInt32 lsr_a(void) {
   UChar temp = reg_a;
   reg_a/=2;
   reg_p = (reg_p & ~(FL_N|FL_T|FL_Z|FL_C))
@@ -1600,7 +1600,7 @@ int lsr_a(void) {
   return 0;
 }
 
-int lsr_abs(void) {
+UInt32 lsr_abs(void) {
   UInt16 temp_addr = get_16bit_addr(reg_pc+1);
   UChar  temp1	   = get_8bit_addr(temp_addr);
   UChar  temp	   = temp1/2;
@@ -1614,7 +1614,7 @@ int lsr_abs(void) {
   return 0;
 }
 
-int lsr_absx(void) {
+UInt32 lsr_absx(void) {
   UInt16 temp_addr = get_16bit_addr(reg_pc+1)+reg_x;
   UChar  temp1	   = get_8bit_addr(temp_addr);
   UChar  temp	   = temp1/2;
@@ -1628,7 +1628,7 @@ int lsr_absx(void) {
   return 0;
 }
 
-int lsr_zp(void) {
+UInt32 lsr_zp(void) {
   UChar  zp_addr = imm_operand(reg_pc+1);
   UChar  temp1	 = get_8bit_zp(zp_addr);
   UChar  temp	 = temp1/2;
@@ -1642,7 +1642,7 @@ int lsr_zp(void) {
   return 0;
 }
 
-int lsr_zpx(void) {
+UInt32 lsr_zpx(void) {
   UChar  zp_addr = imm_operand(reg_pc+1)+reg_x;
   UChar  temp1	 = get_8bit_zp(zp_addr);
   UChar  temp	 = temp1/2;
@@ -1656,14 +1656,14 @@ int lsr_zpx(void) {
   return 0;
 }
 
-int nop(void)  {
+UInt32 nop(void)  {
   reg_p &= ~FL_T;
   reg_pc++;
   cycles+=2;
   return 0;
 }
 
-int ora_abs(void) {
+UInt32 ora_abs(void) {
   if (reg_p & FL_T) {
     UChar temp = get_8bit_zp(reg_x);
     chk_flnz_8bit(temp |= abs_operand(reg_pc+1));
@@ -1678,7 +1678,7 @@ int ora_abs(void) {
   return 0;
 }
 
-int ora_absx(void) {
+UInt32 ora_absx(void) {
   if (reg_p & FL_T) {
     UChar temp = get_8bit_zp(reg_x);
     chk_flnz_8bit(temp |= absx_operand(reg_pc+1));
@@ -1693,7 +1693,7 @@ int ora_absx(void) {
   return 0;
 }
 
-int ora_absy(void) {
+UInt32 ora_absy(void) {
   if (reg_p & FL_T) {
     UChar temp = get_8bit_zp(reg_x);
     chk_flnz_8bit(temp |= absy_operand(reg_pc+1));
@@ -1708,7 +1708,7 @@ int ora_absy(void) {
   return 0;
 }
 
-int ora_imm(void) {
+UInt32 ora_imm(void) {
   if (reg_p & FL_T) {
     UChar temp = get_8bit_zp(reg_x);
     chk_flnz_8bit(temp |= imm_operand(reg_pc+1));
@@ -1723,7 +1723,7 @@ int ora_imm(void) {
   return 0;
 }
 
-int ora_zp(void) {
+UInt32 ora_zp(void) {
   if (reg_p & FL_T) {
     UChar temp = get_8bit_zp(reg_x);
     chk_flnz_8bit(temp |= zp_operand(reg_pc+1));
@@ -1738,7 +1738,7 @@ int ora_zp(void) {
   return 0;
 }
 
-int ora_zpx(void) {
+UInt32 ora_zpx(void) {
   if (reg_p & FL_T) {
     UChar temp = get_8bit_zp(reg_x);
     chk_flnz_8bit(temp |= zpx_operand(reg_pc+1));
@@ -1753,7 +1753,7 @@ int ora_zpx(void) {
   return 0;
 }
 
-int ora_zpind(void) {
+UInt32 ora_zpind(void) {
   if (reg_p & FL_T) {
     UChar temp = get_8bit_zp(reg_x);
     chk_flnz_8bit(temp |= zpind_operand(reg_pc+1));
@@ -1768,7 +1768,7 @@ int ora_zpind(void) {
   return 0;
 }
 
-int ora_zpindx(void) {
+UInt32 ora_zpindx(void) {
   if (reg_p & FL_T) {
     UChar temp = get_8bit_zp(reg_x);
     chk_flnz_8bit(temp |= zpindx_operand(reg_pc+1));
@@ -1783,7 +1783,7 @@ int ora_zpindx(void) {
   return 0;
 }
 
-int ora_zpindy(void) {
+UInt32 ora_zpindy(void) {
   if (reg_p & FL_T) {
     UChar temp = get_8bit_zp(reg_x);
     chk_flnz_8bit(temp |= zpindy_operand(reg_pc+1));
@@ -1798,7 +1798,7 @@ int ora_zpindy(void) {
   return 0;
 }
 
-int pha(void) {
+UInt32 pha(void) {
   reg_p &= ~FL_T;
   push_8bit(reg_a);
   reg_pc++;
@@ -1806,7 +1806,7 @@ int pha(void) {
   return 0;
 }
 
-int php(void) {
+UInt32 php(void) {
   reg_p &= ~FL_T;
   push_8bit(reg_p);
   reg_pc++;
@@ -1814,7 +1814,7 @@ int php(void) {
   return 0;
 }
 
-int phx(void) {
+UInt32 phx(void) {
   reg_p &= ~FL_T;
   push_8bit(reg_x);
   reg_pc++;
@@ -1822,7 +1822,7 @@ int phx(void) {
   return 0;
 }
 
-int phy(void) {
+UInt32 phy(void) {
   reg_p &= ~FL_T;
   push_8bit(reg_y);
   reg_pc++;
@@ -1830,35 +1830,35 @@ int phy(void) {
   return 0;
 }
 
-int pla(void) {
+UInt32 pla(void) {
   chk_flnz_8bit(reg_a = pull_8bit());
   reg_pc++;
   cycles+=4;
   return 0;
 }
 
-int plp(void) {
+UInt32 plp(void) {
   reg_p = pull_8bit();
   reg_pc++;
   cycles+=4;
   return 0;
 }
 
-int plx(void) {
+UInt32 plx(void) {
   chk_flnz_8bit(reg_x = pull_8bit());
   reg_pc++;
   cycles+=4;
   return 0;
 }
 
-int ply(void) {
+UInt32 ply(void) {
   chk_flnz_8bit(reg_y = pull_8bit());
   reg_pc++;
   cycles+=4;
   return 0;
 }
 
-int rmb0(void) {
+UInt32 rmb0(void) {
   UChar temp = imm_operand(reg_pc+1);
   reg_p &= ~FL_T;
   put_8bit_zp(temp, get_8bit_zp(temp) & (~0x01));
@@ -1867,7 +1867,7 @@ int rmb0(void) {
   return 0;
 }
 
-int rmb1(void) {
+UInt32 rmb1(void) {
   UChar temp = imm_operand(reg_pc+1);
   reg_p &= ~FL_T;
   put_8bit_zp(temp, get_8bit_zp(temp) & (~0x02));
@@ -1876,7 +1876,7 @@ int rmb1(void) {
   return 0;
 }
 
-int rmb2(void) {
+UInt32 rmb2(void) {
   UChar temp = imm_operand(reg_pc+1);
   reg_p &= ~FL_T;
   put_8bit_zp(temp, get_8bit_zp(temp) & (~0x04));
@@ -1885,7 +1885,7 @@ int rmb2(void) {
   return 0;
 }
 
-int rmb3(void) {
+UInt32 rmb3(void) {
   UChar temp = imm_operand(reg_pc+1);
   reg_p &= ~FL_T;
   put_8bit_zp(temp, get_8bit_zp(temp) & (~0x08));
@@ -1894,7 +1894,7 @@ int rmb3(void) {
   return 0;
 }
 
-int rmb4(void) {
+UInt32 rmb4(void) {
   UChar temp = imm_operand(reg_pc+1);
   reg_p &= ~FL_T;
   put_8bit_zp(temp, get_8bit_zp(temp) & (~0x10));
@@ -1903,7 +1903,7 @@ int rmb4(void) {
   return 0;
 }
 
-int rmb5(void) {
+UInt32 rmb5(void) {
   UChar temp = imm_operand(reg_pc+1);
   reg_p &= ~FL_T;
   put_8bit_zp(temp, get_8bit_zp(temp) & (~0x20));
@@ -1912,7 +1912,7 @@ int rmb5(void) {
   return 0;
 }
 
-int rmb6(void) {
+UInt32 rmb6(void) {
   UChar temp = imm_operand(reg_pc+1);
   reg_p &= ~FL_T;
   put_8bit_zp(temp, get_8bit_zp(temp) & (~0x40));
@@ -1921,7 +1921,7 @@ int rmb6(void) {
   return 0;
 }
 
-int rmb7(void) {
+UInt32 rmb7(void) {
   UChar temp = imm_operand(reg_pc+1);
   reg_p &= ~FL_T;
   put_8bit_zp(temp, get_8bit_zp(temp) & (~0x80));
@@ -1930,7 +1930,7 @@ int rmb7(void) {
   return 0;
 }
 
-int rol_a(void) {
+UInt32 rol_a(void) {
   UChar flg_tmp = (reg_p & FL_C) ? 1:0;
   UChar temp = reg_a;
 
@@ -1943,7 +1943,7 @@ int rol_a(void) {
   return 0;
 }
 
-int rol_abs(void) {
+UInt32 rol_abs(void) {
   UChar  flg_tmp   = (reg_p & FL_C) ? 1:0;
   UInt16 temp_addr = get_16bit_addr(reg_pc+1);
   UChar  temp1	   = get_8bit_addr(temp_addr);
@@ -1958,7 +1958,7 @@ int rol_abs(void) {
   return 0;
 }
 
-int rol_absx(void) {
+UInt32 rol_absx(void) {
   UChar  flg_tmp   = (reg_p & FL_C) ? 1:0;
   UInt16 temp_addr = get_16bit_addr(reg_pc+1)+reg_x;
   UChar  temp1	   = get_8bit_addr(temp_addr);
@@ -1973,7 +1973,7 @@ int rol_absx(void) {
   return 0;
 }
 
-int rol_zp(void) {
+UInt32 rol_zp(void) {
   UChar  flg_tmp = (reg_p & FL_C) ? 1:0;
   UChar  zp_addr = imm_operand(reg_pc+1);
   UChar  temp1	 = get_8bit_zp(zp_addr);
@@ -1988,7 +1988,7 @@ int rol_zp(void) {
   return 0;
 }
 
-int rol_zpx(void) {
+UInt32 rol_zpx(void) {
   UChar  flg_tmp = (reg_p & FL_C) ? 1:0;
   UChar  zp_addr = imm_operand(reg_pc+1)+reg_x;
   UChar  temp1	 = get_8bit_zp(zp_addr);
@@ -2003,7 +2003,7 @@ int rol_zpx(void) {
   return 0;
 }
 
-int ror_a(void) {
+UInt32 ror_a(void) {
   UChar flg_tmp = (reg_p & FL_C) ? 0x80:0;
   UChar temp	= reg_a;
 
@@ -2016,7 +2016,7 @@ int ror_a(void) {
   return 0;
 }
 
-int ror_abs(void) {
+UInt32 ror_abs(void) {
   UChar  flg_tmp   = (reg_p & FL_C) ? 0x80:0;
   UInt16 temp_addr = get_16bit_addr(reg_pc+1);
   UChar  temp1	   = get_8bit_addr(temp_addr);
@@ -2031,7 +2031,7 @@ int ror_abs(void) {
   return 0;
 }
 
-int ror_absx(void) {
+UInt32 ror_absx(void) {
   UChar  flg_tmp   = (reg_p & FL_C) ? 0x80:0;
   UInt16 temp_addr = get_16bit_addr(reg_pc+1)+reg_x;
   UChar  temp1	   = get_8bit_addr(temp_addr);
@@ -2046,7 +2046,7 @@ int ror_absx(void) {
   return 0;
 }
 
-int ror_zp(void) {
+UInt32 ror_zp(void) {
   UChar  flg_tmp = (reg_p & FL_C) ? 0x80:0;
   UChar  zp_addr = imm_operand(reg_pc+1);
   UChar  temp1	 = get_8bit_zp(zp_addr);
@@ -2061,7 +2061,7 @@ int ror_zp(void) {
   return 0;
 }
 
-int ror_zpx(void) {
+UInt32 ror_zpx(void) {
   UChar  flg_tmp = (reg_p & FL_C) ? 0x80:0;
   UChar  zp_addr = imm_operand(reg_pc+1)+reg_x;
   UChar  temp1	 = get_8bit_zp(zp_addr);
@@ -2076,7 +2076,7 @@ int ror_zpx(void) {
   return 0;
 }
 
-int rti(void) {
+UInt32 rti(void) {
   /* FL_B reset in RTI */
   reg_p = pull_8bit() & ~FL_B;
   reg_pc = pull_16bit();
@@ -2084,14 +2084,14 @@ int rti(void) {
   return 0;
 }
 
-int rts(void) {
+UInt32 rts(void) {
   reg_p &= ~FL_T;
   reg_pc = pull_16bit()+1;
   cycles+=7;
   return 0;
 }
 
-int sax(void) {
+UInt32 sax(void) {
   UChar temp = reg_x;
   reg_p &= ~FL_T;
   reg_x = reg_a;
@@ -2101,7 +2101,7 @@ int sax(void) {
   return 0;
 }
 
-int say(void) {
+UInt32 say(void) {
   UChar temp = reg_y;
   reg_p &= ~FL_T;
   reg_y = reg_a;
@@ -2111,86 +2111,86 @@ int say(void) {
   return 0;
 }
 
-int sbc_abs(void) {
+UInt32 sbc_abs(void) {
   sbc(abs_operand(reg_pc+1));
   reg_pc+=3;
   cycles+=5;
   return 0;
 }
 
-int sbc_absx(void) {
+UInt32 sbc_absx(void) {
   sbc(absx_operand(reg_pc+1));
   reg_pc+=3;
   cycles+=5;
   return 0;
 }
 
-int sbc_absy(void) {
+UInt32 sbc_absy(void) {
   sbc(absy_operand(reg_pc+1));
   reg_pc+=3;
   cycles+=5;
   return 0;
 }
 
-int sbc_imm(void) {
+UInt32 sbc_imm(void) {
   sbc(imm_operand(reg_pc+1));
   reg_pc+=2;
   cycles+=2;
   return 0;
 }
 
-int sbc_zp(void) {
+UInt32 sbc_zp(void) {
   sbc(zp_operand(reg_pc+1));
   reg_pc+=2;
   cycles+=4;
   return 0;
 }
 
-int sbc_zpx(void) {
+UInt32 sbc_zpx(void) {
   sbc(zpx_operand(reg_pc+1));
   reg_pc+=2;
   cycles+=4;
   return 0;
 }
 
-int sbc_zpind(void) {
+UInt32 sbc_zpind(void) {
   sbc(zpind_operand(reg_pc+1));
   reg_pc+=2;
   cycles+=7;
   return 0;
 }
 
-int sbc_zpindx(void) {
+UInt32 sbc_zpindx(void) {
   sbc(zpindx_operand(reg_pc+1));
   reg_pc+=2;
   cycles+=7;
   return 0;
 }
 
-int sbc_zpindy(void) {
+UInt32 sbc_zpindy(void) {
   sbc(zpindy_operand(reg_pc+1));
   reg_pc+=2;
   cycles+=7;
   return 0;
 }
 
-int sec(void) {
+UInt32 sec(void) {
   reg_p = (reg_p|FL_C) & ~FL_T;
   reg_pc++;
   cycles+=2;
   return 0;
 }
 
-int sed(void) {
+UInt32 sed(void) {
   reg_p = (reg_p|FL_D) & ~FL_T;
   reg_pc++;
   cycles+=2;
   return 0;
 }
 
-int sei(void) {
+UInt32 sei(void) {
 #ifdef DUMP_ON_SEI
-	int i;
+	UInt32 i;
 	Log("MMR[7]\n");
 	for (i = 0xE000; i < 0xE100; i++)
 		{
@@ -2203,14 +2203,14 @@ int sei(void) {
   return 0;
 }
 
-int set(void) {
+UInt32 set(void) {
   reg_p |= FL_T;
   reg_pc++;
   cycles+=2;
   return 0;
 }
 
-int smb0(void) {
+UInt32 smb0(void) {
   UChar temp = imm_operand(reg_pc+1);
   reg_p &= ~FL_T;
   put_8bit_zp(temp, get_8bit_zp(temp) | 0x01);
@@ -2219,7 +2219,7 @@ int smb0(void) {
   return 0;
 }
 
-int smb1(void) {
+UInt32 smb1(void) {
   UChar temp = imm_operand(reg_pc+1);
   reg_p &= ~FL_T;
   put_8bit_zp(temp, get_8bit_zp(temp) | 0x02);
@@ -2228,7 +2228,7 @@ int smb1(void) {
   return 0;
 }
 
-int smb2(void) {
+UInt32 smb2(void) {
   UChar temp = imm_operand(reg_pc+1);
   reg_p &= ~FL_T;
   put_8bit_zp(temp, get_8bit_zp(temp) | 0x04);
@@ -2237,7 +2237,7 @@ int smb2(void) {
   return 0;
 }
 
-int smb3(void) {
+UInt32 smb3(void) {
   UChar temp = imm_operand(reg_pc+1);
   reg_p &= ~FL_T;
   put_8bit_zp(temp, get_8bit_zp(temp) | 0x08);
@@ -2246,7 +2246,7 @@ int smb3(void) {
   return 0;
 }
 
-int smb4(void) {
+UInt32 smb4(void) {
   UChar temp = imm_operand(reg_pc+1);
   reg_p &= ~FL_T;
   put_8bit_zp(temp, get_8bit_zp(temp) | 0x10);
@@ -2255,7 +2255,7 @@ int smb4(void) {
   return 0;
 }
 
-int smb5(void) {
+UInt32 smb5(void) {
   UChar temp = imm_operand(reg_pc+1);
   reg_p &= ~FL_T;
   put_8bit_zp(temp, get_8bit_zp(temp) | 0x20);
@@ -2264,7 +2264,7 @@ int smb5(void) {
   return 0;
 }
 
-int smb6(void) {
+UInt32 smb6(void) {
   UChar temp = imm_operand(reg_pc+1);
   reg_p &= ~FL_T;
   put_8bit_zp(temp, get_8bit_zp(temp) | 0x40);
@@ -2273,7 +2273,7 @@ int smb6(void) {
   return 0;
 }
 
-int smb7(void) {
+UInt32 smb7(void) {
   UChar temp = imm_operand(reg_pc+1);
   reg_p &= ~FL_T;
   put_8bit_zp(temp, get_8bit_zp(temp) | 0x80);
@@ -2282,7 +2282,7 @@ int smb7(void) {
   return 0;
 }
 
-int st0(void) {
+UInt32 st0(void) {
   reg_p &= ~FL_T;
   IO_write(0,imm_operand(reg_pc+1));
   reg_pc+=2;
@@ -2290,7 +2290,7 @@ int st0(void) {
   return 0;
 }
 
-int st1(void) {
+UInt32 st1(void) {
   reg_p &= ~FL_T;
   IO_write(2,imm_operand(reg_pc+1));
   reg_pc+=2;
@@ -2298,7 +2298,7 @@ int st1(void) {
   return 0;
 }
 
-int st2(void) {
+UInt32 st2(void) {
   reg_p &= ~FL_T;
   IO_write(3,imm_operand(reg_pc+1));
   reg_pc+=2;
@@ -2306,7 +2306,7 @@ int st2(void) {
   return 0;
 }
 
-int sta_abs(void) {
+UInt32 sta_abs(void) {
   reg_p &= ~FL_T;
   cycles+=5;
   put_8bit_addr(get_16bit_addr(reg_pc+1), reg_a);
@@ -2314,7 +2314,7 @@ int sta_abs(void) {
   return 0;
 }
 
-int sta_absx(void) {
+UInt32 sta_absx(void) {
   reg_p &= ~FL_T;
   cycles+=5;
   put_8bit_addr(get_16bit_addr(reg_pc+1)+reg_x, reg_a);
@@ -2322,7 +2322,7 @@ int sta_absx(void) {
   return 0;
 }
 
-int sta_absy(void) {
+UInt32 sta_absy(void) {
   reg_p &= ~FL_T;
   cycles+=5;
   put_8bit_addr(get_16bit_addr(reg_pc+1)+reg_y, reg_a);
@@ -2330,7 +2330,7 @@ int sta_absy(void) {
   return 0;
 }
 
-int sta_zp(void) {
+UInt32 sta_zp(void) {
   reg_p &= ~FL_T;
   put_8bit_zp(imm_operand(reg_pc+1), reg_a);
 
@@ -2339,7 +2339,7 @@ int sta_zp(void) {
   return 0;
 }
 
-int sta_zpx(void) {
+UInt32 sta_zpx(void) {
   reg_p &= ~FL_T;
   put_8bit_zp(imm_operand(reg_pc+1)+reg_x, reg_a);
   reg_pc+=2;
@@ -2347,7 +2347,7 @@ int sta_zpx(void) {
   return 0;
 }
 
-int sta_zpind(void) {
+UInt32 sta_zpind(void) {
   reg_p &= ~FL_T;
   cycles+=7;
   put_8bit_addr(get_16bit_zp(imm_operand(reg_pc+1)), reg_a);
@@ -2355,7 +2355,7 @@ int sta_zpind(void) {
   return 0;
 }
 
-int sta_zpindx(void) {
+UInt32 sta_zpindx(void) {
   reg_p &= ~FL_T;
   cycles+=7;
   put_8bit_addr(get_16bit_zp(imm_operand(reg_pc+1)+reg_x), reg_a);
@@ -2363,7 +2363,7 @@ int sta_zpindx(void) {
   return 0;
 }
 
-int sta_zpindy(void) {
+UInt32 sta_zpindy(void) {
   reg_p &= ~FL_T;
   cycles+=7;
   put_8bit_addr(get_16bit_zp(imm_operand(reg_pc+1))+reg_y, reg_a);
@@ -2371,7 +2371,7 @@ int sta_zpindy(void) {
   return 0;
 }
 
-int stx_abs(void) {
+UInt32 stx_abs(void) {
   reg_p &= ~FL_T;
   cycles+=5;
   put_8bit_addr(get_16bit_addr(reg_pc+1), reg_x);
@@ -2379,7 +2379,7 @@ int stx_abs(void) {
   return 0;
 }
 
-int stx_zp(void) {
+UInt32 stx_zp(void) {
   reg_p &= ~FL_T;
   put_8bit_zp(imm_operand(reg_pc+1), reg_x);
   reg_pc+=2;
@@ -2387,7 +2387,7 @@ int stx_zp(void) {
   return 0;
 }
 
-int stx_zpy(void) {
+UInt32 stx_zpy(void) {
   reg_p &= ~FL_T;
   put_8bit_zp(imm_operand(reg_pc+1)+reg_y, reg_x);
   reg_pc+=2;
@@ -2395,7 +2395,7 @@ int stx_zpy(void) {
   return 0;
 }
 
-int sty_abs(void) {
+UInt32 sty_abs(void) {
   reg_p &= ~FL_T;
   cycles+=5;
   put_8bit_addr(get_16bit_addr(reg_pc+1), reg_y);
@@ -2403,7 +2403,7 @@ int sty_abs(void) {
   return 0;
 }
 
-int sty_zp(void) {
+UInt32 sty_zp(void) {
   reg_p &= ~FL_T;
   put_8bit_zp(imm_operand(reg_pc+1), reg_y);
   reg_pc+=2;
@@ -2411,7 +2411,7 @@ int sty_zp(void) {
   return 0;
 }
 
-int sty_zpx(void) {
+UInt32 sty_zpx(void) {
   reg_p &= ~FL_T;
   put_8bit_zp(imm_operand(reg_pc+1)+reg_x, reg_y);
   reg_pc+=2;
@@ -2419,7 +2419,7 @@ int sty_zpx(void) {
   return 0;
 }
 
-int stz_abs(void) {
+UInt32 stz_abs(void) {
   reg_p &= ~FL_T;
   cycles+=5;
   put_8bit_addr(get_16bit_addr(reg_pc+1), 0);
@@ -2427,7 +2427,7 @@ int stz_abs(void) {
   return 0;
 }
 
-int stz_absx(void) {
+UInt32 stz_absx(void) {
   reg_p &= ~FL_T;
   cycles+=5;
   put_8bit_addr((get_16bit_addr(reg_pc+1)+reg_x), 0);
@@ -2435,7 +2435,7 @@ int stz_absx(void) {
   return 0;
 }
 
-int stz_zp(void) {
+UInt32 stz_zp(void) {
   reg_p &= ~FL_T;
   put_8bit_zp(imm_operand(reg_pc+1), 0);
   reg_pc+=2;
@@ -2443,7 +2443,7 @@ int stz_zp(void) {
   return 0;
 }
 
-int stz_zpx(void) {
+UInt32 stz_zpx(void) {
   reg_p &= ~FL_T;
   put_8bit_zp(imm_operand(reg_pc+1)+reg_x, 0);
   reg_pc+=2;
@@ -2451,7 +2451,7 @@ int stz_zpx(void) {
   return 0;
 }
 
-int sxy(void) {
+UInt32 sxy(void) {
   UChar temp = reg_y;
   reg_p &= ~FL_T;
   reg_y = reg_x;
@@ -2461,7 +2461,7 @@ int sxy(void) {
   return 0;
 }
 
-int tai(void) {
+UInt32 tai(void) {
   UInt16 from, to, len, alternate;
 
   reg_p &= ~FL_T;
@@ -2488,7 +2488,7 @@ int tai(void) {
 static int tamwrite = -1;
 static int tmaread = 0;
 
-int tam(void) {
+UInt32 tam(void) {
   UInt16 i;
   UChar bitfld = imm_operand(reg_pc+1);
 
@@ -2520,21 +2520,21 @@ int tam(void) {
   return 0;
 }
 
-int tax(void) {
+UInt32 tax(void) {
   chk_flnz_8bit(reg_x = reg_a);
   reg_pc++;
   cycles+=2;
   return 0;
 }
 
-int tay(void) {
+UInt32 tay(void) {
   chk_flnz_8bit(reg_y = reg_a);
   reg_pc++;
   cycles+=2;
   return 0;
 }
 
-int tdd(void) {
+UInt32 tdd(void) {
   UInt16 from, to, len;
 
   reg_p &= ~FL_T;
@@ -2555,7 +2555,7 @@ int tdd(void) {
   return 0;
 }
 
-int tia(void) {
+UInt32 tia(void) {
   UInt16 from, to, len, alternate;
 
   reg_p &= ~FL_T;
@@ -2578,7 +2578,7 @@ int tia(void) {
   return 0;
 }
 
-int tii(void) {
+UInt32 tii(void) {
   UInt16 from, to, len;
 
   reg_p &= ~FL_T;
@@ -2599,7 +2599,7 @@ int tii(void) {
   return 0;
 }
 
-int tin(void) {
+UInt32 tin(void) {
   UInt16 from, to, len;
 
   reg_p &= ~FL_T;
@@ -2620,8 +2620,8 @@ int tin(void) {
   return 0;
 }
 
-int tma(void) {
-  int i;
+UInt32 tma(void) {
+  UInt32 i;
   UChar bitfld = imm_operand(reg_pc+1);
 
 #if defined(KERNEL_DEBUG)
@@ -2659,7 +2659,7 @@ int tma(void) {
   return 0;
 }
 
-int trb_abs(void) {
+UInt32 trb_abs(void) {
   UInt16 abs_addr = get_16bit_addr(reg_pc+1);
   UChar  temp	  = get_8bit_addr(abs_addr);
   UChar  temp1	  = (~reg_a) & temp;
@@ -2674,7 +2674,7 @@ int trb_abs(void) {
   return 0;
 }
 
-int trb_zp(void) {
+UInt32 trb_zp(void) {
   UChar zp_addr  = imm_operand(reg_pc+1);
   UChar temp	 = get_8bit_zp(zp_addr);
   UChar temp1	 = (~reg_a) & temp;
@@ -2689,7 +2689,7 @@ int trb_zp(void) {
   return 0;
 }
 
-int tsb_abs(void) {
+UInt32 tsb_abs(void) {
   UInt16 abs_addr = get_16bit_addr(reg_pc+1);
   UChar  temp	  = get_8bit_addr(abs_addr);
   UChar  temp1	  = reg_a | temp;
@@ -2704,7 +2704,7 @@ int tsb_abs(void) {
   return 0;
 }
 
-int tsb_zp(void) {
+UInt32 tsb_zp(void) {
   UChar zp_addr  = imm_operand(reg_pc+1);
   UChar temp	 = get_8bit_zp(zp_addr);
   UChar temp1	 = reg_a | temp;
@@ -2719,7 +2719,7 @@ int tsb_zp(void) {
   return 0;
 }
 
-int tstins_abs(void) {
+UInt32 tstins_abs(void) {
   UChar  imm	  = imm_operand(reg_pc+1);
   UChar  temp	  = abs_operand(reg_pc+2);
 
@@ -2732,7 +2732,7 @@ int tstins_abs(void) {
   return 0;
 }
 
-int tstins_absx(void) {
+UInt32 tstins_absx(void) {
   UChar  imm	  = imm_operand(reg_pc+1);
   UChar  temp	  = absx_operand(reg_pc+2);
 
@@ -2745,7 +2745,7 @@ int tstins_absx(void) {
   return 0;
 }
 
-int tstins_zp(void) {
+UInt32 tstins_zp(void) {
   UChar imm	= imm_operand(reg_pc+1);
   UChar temp	= zp_operand(reg_pc+2);
 
@@ -2758,7 +2758,7 @@ int tstins_zp(void) {
   return 0;
 }
 
-int tstins_zpx(void) {
+UInt32 tstins_zpx(void) {
   UChar imm	= imm_operand(reg_pc+1);
   UChar temp	= zpx_operand(reg_pc+2);
 
@@ -2772,21 +2772,21 @@ int tstins_zpx(void) {
 }
 
 
-int tsx(void) {
+UInt32 tsx(void) {
   chk_flnz_8bit(reg_x = reg_s);
   reg_pc++;
   cycles+=2;
   return 0;
 }
 
-int txa(void) {
+UInt32 txa(void) {
   chk_flnz_8bit(reg_a = reg_x);
   reg_pc++;
   cycles+=2;
   return 0;
 }
 
-int txs(void) {
+UInt32 txs(void) {
   reg_p &= ~FL_T;
   reg_s = reg_x;
   reg_pc++;
@@ -2794,7 +2794,7 @@ int txs(void) {
   return 0;
 }
 
-int tya(void) {
+UInt32 tya(void) {
   chk_flnz_8bit(reg_a = reg_y);
   reg_pc++;
   cycles+=2;
@@ -2803,7 +2803,7 @@ int tya(void) {
 
 // perform machine operations for IRQ2:
 
-int int_irq2 (void) {
+UInt32 int_irq2 (void) {
   if ((io.irq_mask & FL_IRQ2) != 0) {   // interrupt disabled
      return 0;
   }
@@ -2820,7 +2820,7 @@ int int_irq2 (void) {
 
 // perform machine operations for IRQ1 (video interrupt):
 
-int int_irq1 (void) {
+UInt32 int_irq1 (void) {
   if ((io.irq_mask & FL_IRQ1) != 0) {   // interrupt disabled
      return 0;
   }
@@ -2837,7 +2837,7 @@ int int_irq1 (void) {
 
 // perform machine operations for timer interrupt:
 
-int int_tiq(void) {
+UInt32 int_tiq(void) {
   if ((io.irq_mask & FL_TIQ) != 0) {    // interrupt disabled
      return 0;
   }

@@ -46,7 +46,7 @@ extern u8 aspect;
  ****************************************************************************/
 void unpack()
 {
-  unsigned long res, inbytes, outbytes;
+  unsigned long inbytes, outbytes;
   int *temp;
   int h,w,v;
   
@@ -59,8 +59,7 @@ void unpack()
 
   // Allocate temporary space 
   temp = malloc(outbytes + 16);
-  res = uncompress( (Bytef *)temp, &outbytes, (Bytef *)hugologo, inbytes);
-  if (res == res) {}; // Gamecube compiler error suppression
+  uncompress( (Bytef *)temp, &outbytes, (Bytef *)hugologo, inbytes);
   
   memcpy(&w, temp, 4);
   backcolour = w;
@@ -580,6 +579,7 @@ int loadmenu ()
       // Load from DVD
       case 2:
         DVD_Init();
+		DVD_Reset(DVD_RESETHARD);
         dvd_drive_detect();
         load_menu = menu;
         size = DVD_Open(hugorom);

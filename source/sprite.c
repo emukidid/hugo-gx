@@ -199,7 +199,7 @@ void
 RefreshLine (int Y1, int Y2)
 {
   int X1, XW, Line;
-  int x, y, h, offset, Shift;
+  int x, y, h, offset/*, Shift*/;
 
   UChar *PP;
   Y2++;
@@ -231,8 +231,7 @@ RefreshLine (int Y1, int Y2)
       y >>= 3;
       PP -= ScrollX & 7;
       XW = io.screen_w / 8 + 1;
-      Shift = ScrollX & 7;
-      if (Shift == Shift) {};        // Gamecube compiler error suppression 
+      //Shift = ScrollX & 7;
 
       for (Line = Y1; Line < Y2; y++)
 	{

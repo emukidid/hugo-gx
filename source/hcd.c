@@ -1140,9 +1140,6 @@ HCD_iso_read_sector(unsigned char *p, UInt32 dum, UInt32 result)
   static int current_file = 0;
   static int current_type = 0;
 
-  if (current_position == current_position) {};        // Gamecube compiler error suppression
-
-
 #ifndef FINAL_RELEASE
   fprintf (stderr, "Loading sector nø%d.\n", pce_cd_sectoraddy);
   Log ("Loading sector nø%d.\n", pce_cd_sectoraddy);

@@ -56,12 +56,12 @@ int
 config_var_cmp (const void *lhs, const void *rhs)
 {
   int section_cmp =
-    stricmp (((config_var *) lhs)->section, ((config_var *) rhs)->section);
+    strcasecmp (((config_var *) lhs)->section, ((config_var *) rhs)->section);
 
   if (section_cmp != 0)
     return section_cmp;
 
-  return stricmp (((config_var *) lhs)->variable,
+  return strcasecmp (((config_var *) lhs)->variable,
 		  ((config_var *) rhs)->variable);
 }
 

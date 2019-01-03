@@ -60,10 +60,11 @@ int osd_init_machine(void)
   // Initialize Video
   ogc_video__init();
 
-//#ifndef HW_RVL        //  initialize DVD drive commands moved to /gui/menu.c
-//  DVD_Init ();
+#ifndef HW_RVL        //  initialize DVD drive commands moved to /gui/menu.c
+  DVD_Init ();
+  DVD_Reset(DVD_RESETHARD);
 //  dvd_drive_detect();
-//#endif
+#endif
 
   // Initialize FAT Interface
   if (fatInitDefault() == true)
